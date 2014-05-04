@@ -6,7 +6,6 @@ var ONE = 128, TWO = 128*128, THREE = 128*128*128, FOUR = 128*128*128*128
 //if this turns out to be a good idea.
 
 varint.dynamicLength = function (v) {
-  console.log('varint.dynamicLength', v)
   return (
     v <= ONE   ? 1
   : v <= TWO   ? 2
@@ -141,7 +140,6 @@ exports.varbuf = function (lenType) {
     dynamicLength: function (value) {
       return value.length + (lenType.length || lenType.dynamicLength(value.length))
     }
-
   }
 }
 
