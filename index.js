@@ -40,6 +40,7 @@ exports = module.exports = function (parts) {
 exports.int8 = {
   encode: function (value, buffer, offset) {
     if(!buffer) return new Buffer([value & 0xff])
+    console.log('byte-set', value, buffer, offset)
     buffer[offset] = value
     return buffer
   },
@@ -73,5 +74,29 @@ exports.array = function (len) {
       return buffer.slice(offset, offset + len)
     },
     length: len
+  }
+}
+
+exports.varbuf = function (lenType) {
+  return {
+    encode: function (value, buffer, offset) {
+    buffer = buffer || new Buffer(this.length(value))
+      offset = offset | 0
+      buffer = lenType.encode(value.length, buffer, offset)
+      console.log(buffer, this.length(value), lenType)
+      offset += lenType.length
+      value.copy(buffer, offset, 0, value.length)
+      return buffer
+    },
+    decode: function (buffer, offset) {
+      offset = offset | 0
+      var length = lenType.decode(buffer, offset)
+      offset += lenType.length
+      return buffer.slice(offset, offset + length)
+    },
+    length: function (value) {
+      return value.length + lenType.length
+    }
+
   }
 }
