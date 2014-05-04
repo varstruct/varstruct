@@ -62,3 +62,59 @@ tape('varbuf', function (t) {
   t.deepEqual(slice.decode(buffer), expected)
   t.end()
 })
+
+tape('varbuf + static', function (t) {
+
+  var sha256 = b.array(32)
+
+  var message = b({
+    prev: sha256,
+    author: sha256,
+    sequence: b.UInt32BE,
+    type: sha256,
+    message: b.varbuf(b.int8)
+  })
+  var empty = crypto.createHash('sha256').digest()
+
+  var zeros = new Buffer(32); zeros.fill()
+
+  var expected = {
+    prev     : empty, author : empty,
+    sequence : 0,     type   : zeros,
+    message  : new Buffer('hello there this is the first message', 'utf8')
+  }
+
+  var buffer = message.encode(expected)
+  console.log(buffer)
+
+  t.deepEqual(message.decode(buffer), expected)
+
+  t.end()
+
+})
+
+tape('varint buffer', function (t) {
+
+  var buf = b.varbuf(b.varint)
+
+  var buffer = buf.encode(new Buffer('hello'))
+  console.log('out', buffer)
+  t.deepEqual(new Buffer([0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]), buffer)
+
+  var expected = new Buffer(
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
+  )
+
+  var buffer = buf.encode(expected)
+
+  console.log(buffer)
+  t.equal(buffer.length, expected.length + 2)
+  t.deepEqual(buf.decode(buffer), expected)
+  t.end()
+})
