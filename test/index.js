@@ -5,7 +5,7 @@ var b = require('../')
 tape('simple', function (t) {
 
   var byte = b.int8
-  var double = b.doubleBE
+  var double = b.DoubleBE
 
   t.equal(byte.decode(byte.encode(9)), 9)
   var r = Math.random()
@@ -14,7 +14,7 @@ tape('simple', function (t) {
 })
 
 tape('vector', function (t) {
-  var double = b.doubleBE
+  var double = b.DoubleBE
 
   var vector = b({
     x: double,
