@@ -53,3 +53,12 @@ tape('buffer', function (t) {
   t.end()
 
 })
+
+tape('varbuf', function (t) {
+  var slice = b.varbuf(b.int8)
+  var expected = new Buffer([1, 2, 3, 4, 5])
+  var buffer = slice.encode(expected)
+  t.deepEqual(buffer, new Buffer([5, 1, 2, 3, 4, 5]))
+  t.deepEqual(slice.decode(buffer), expected)
+  t.end()
+})
