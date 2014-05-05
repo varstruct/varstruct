@@ -118,3 +118,20 @@ tape('varint buffer', function (t) {
   t.deepEqual(buf.decode(buffer), expected)
   t.end()
 })
+
+tape('vararray', function (t) {
+
+  var array = b.vararray(b.byte, b.DoubleBE)
+  var expected = [
+    Math.random(), Math.random(), Math.random(), Math.random(),
+    Math.random(), Math.random(), Math.random(), Math.random(),
+    Math.random(), Math.random(), Math.random(), Math.random(),
+    Math.random(), Math.random(), Math.random(), Math.random(),
+  ]
+
+  t.equal(array.dynamicLength(expected), 1 + 8*4*4)
+  var buffer = array.encode(expected)
+  console.log(buffer)
+  t.deepEqual(array.decode(buffer), expected)
+  t.end()
+})
