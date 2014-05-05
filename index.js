@@ -124,7 +124,7 @@ exports.array = function (len) {
 exports.varbuf = function (lenType) {
   return {
     encode: function (value, buffer, offset) {
-    buffer = buffer || new Buffer(this.dynamicLength(value) )
+      buffer = buffer || new Buffer(this.dynamicLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
       offset += lenType.length || lenType.dynamicLength(value.length)
@@ -145,3 +145,44 @@ exports.varbuf = function (lenType) {
 
 
 exports.varint = varint
+
+exports.vararray = function (lenType, itemType) {
+  return {
+    encode: function (value, buffer, offset) {
+      if(!Array.isArray(value))
+        throw new Error('can only encode arrays')
+      if(!buffer) {
+        buffer = new Buffer(this.dynamicLength(value))
+        offset = 0
+      }
+      var contentLength = value.length*itemType.length
+      lenType.encode(contentLength, buffer, offset)
+      offset += lenType.length || lenType.dynamicLength(contentLength)
+      value.forEach(function (e) {
+        itemType.encode(e, buffer, offset)
+        offset += itemType.length || itemType.dynamicLength(e)
+      })
+      return buffer
+    },
+    decode: function (buffer, offset) {
+      offset = offset | 0
+      var length = lenType.decode(buffer, offset)
+      offset += lenType.length || lenType.dynamicLength(length)
+      o = offset
+      var array = []
+      while(o < offset + length) {
+        var last = itemType.decode(buffer, o)
+        o += itemType.length || itemType.dynamicLength(last)
+        array.push(last)
+      }
+      return array
+    },
+    dynamicLength: function (value) {
+      var contentLength = value.length*itemType.length
+      return (
+        contentLength
+      + (lenType.length || lenType.dynamicLength(contentLength))
+      )
+    }
+  }
+}
