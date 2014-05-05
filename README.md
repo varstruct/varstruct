@@ -27,6 +27,31 @@ var buffer = vector.encode({
 var v = vector.decode(buffer)
 ```
 
+## Example - a message metadata + attachments
+
+``` js
+var vstruct = require('varstruct')
+
+//codec for a sha256 hash
+var sha256 = vstruct.buffer(32)
+
+var message = vstruct({
+  //the hash of the previous message
+  previous: sha256,
+
+  //the hash of the author's public key
+  author: sha256,
+
+  //an arbitary length buffer
+  message: vstruct.varbuffer(vstruct.varint),
+
+  //hashes of related documents.
+  attachments:
+    vstruct.vararray(vstruct.byte, sha256)
+}
+
+```
+
 ## API
 
 ### abstract interface: codec.
@@ -90,8 +115,8 @@ variable length itself (i.e. a varint), but must encode an integer.
 
 create a variable length codec that encodes an array of items.
 `itemCodec` may be any varstruct compatible codec, including a vararray.
-As long as it can encode very element in the array. `lengthCodec`
-must encode an integer.
+As long as it can encode very element in the array.
+`lengthCodec` must encode an integer.
 
 ## License
 
