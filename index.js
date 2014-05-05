@@ -106,6 +106,13 @@ exports.UInt32BE = createNumber('UInt32LE', 4)
 exports.FloatBE  = createNumber('FloatLE', 4)
 exports.DoubleBE = createNumber('DoubleLE', 8)
 
+
+exports.UInt16 = exports.UInt16BE
+exports.UInt32 = exports.UInt32BE
+exports.Float = exports.FloatBE
+exports.Double = exports.DoubleBE
+
+exports.buffer =
 exports.array = function (len) {
   return {
     encode: function (value, b, offset) {
