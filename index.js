@@ -40,21 +40,27 @@ exports = module.exports = function (parts) {
   }
 
   return {
-    encode: function (obj) {
-      var b = new Buffer(funLen ? getLength(obj) : length )
-      var offset = 0
+    encode: function encode (obj, b, offset) {
+      if(!b)
+        b = new Buffer(funLen ? getLength(obj) : length )
+      offset = offset | 0
+      var _offset = offset
+
       for(var k in parts) {
         parts[k].encode(obj[k], b, offset)
-        offset += lengthOf(parts[k], obj[k])
+        offset += parts[k].encode.bytesWritten
+//        offset += lengthOf(parts[k], obj[k])
       }
+      encode.bytesWritten = offset - _offset
       return b
     },
-    decode: function (buffer) {
+    decode: function decode (buffer) {
       var obj = {}
-      var offset = 0
+      var offset = decode.bytesRead = 0
       for(var k in parts) {
         obj[k] = parts[k].decode(buffer, offset)
         offset += lengthOf(parts[k], obj[k]) | 0
+        decode.bytesRead += parts[k].decode.bytesRead
       }
       return obj
     },
@@ -63,36 +69,49 @@ exports = module.exports = function (parts) {
   }
 }
 
-exports.int8 = {
-  encode: function (value, buffer, offset) {
-    if(!buffer) return new Buffer([value & 0xff])
-    console.log('byte-set', value, buffer, offset)
-    buffer[offset] = value
-    return buffer
-  },
-  decode: function (buffer, offset) {
-    return buffer[offset | 0]
-  },
-  length: 1
-}
+//exports.int8 = ;(function () {
+//  function encode (value, buffer, offset) {
+//    if(!buffer) return new Buffer([value & 0xff])
+//    console.log('byte-set', value, buffer, offset)
+//    buffer[offset] = value
+//    return buffer
+//  }
+//
+//  function decode (buffer, offset) {
+//    return buffer[offset | 0]
+//  }
+//
+//  decode.bytesRead = encode.bytesWritten = 1
+//  return {
+//    encode: encode,
+//    decode: decode,
+//    length: 1
+//  }
+//})()
+//
 
 function createNumber(type, len) {
   var read = Buffer.prototype['read' + type]
   var write = Buffer.prototype['write' + type]
+  function encode (value, b, offset) {
+    b = b || new Buffer(len)
+    write.call(b, value, offset | 0)
+    return b
+  }
+  function decode (buffer, offset) {
+    return read.call(buffer, offset|0)
+  }
+
+  encode.bytesWritten = decode.bytesRead = len
   return {
-    encode: function (value, b, offset) {
-      b = b || new Buffer(len)
-      write.call(b, value, offset | 0)
-      return b
-    },
-    decode: function (buffer, offset) {
-      return read.call(buffer, offset|0)
-    },
+    encode: encode,
+    decode: decode,
     length: len
   }
 }
 
 exports.byte =
+exports.int8 =
 exports.Int8 =
 exports.UInt8 = createNumber('UInt8', 1)
 
@@ -114,34 +133,41 @@ exports.Double = exports.DoubleBE
 
 exports.buffer =
 exports.array = function (len) {
+
+  function encode (value, b, offset) {
+    //already encodes a buffer, so if there is no b just return.
+    if(!b) return value
+    value.copy(b, offset, 0, len)
+    return b
+  }
+  function decode (buffer, offset) {
+    return buffer.slice(offset, offset + len)
+  }
+  encode.bytesWritten = decode.bytesRead = len
+
   return {
-    encode: function (value, b, offset) {
-      //already encodes a buffer, so if there is no b just return.
-      if(!b) return value
-      value.copy(b, offset, 0, len)
-      return b
-    },
-    decode: function (buffer, offset) {
-      return buffer.slice(offset, offset + len)
-    },
+    encode: encode,
+    decode: decode,
     length: len
   }
 }
 
 exports.varbuf = function (lenType) {
   return {
-    encode: function (value, buffer, offset) {
+    encode: function encode (value, buffer, offset) {
       buffer = buffer || new Buffer(this.dynamicLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
       offset += lenType.length || lenType.dynamicLength(value.length)
       value.copy(buffer, offset, 0, value.length)
+      encode.bytesWritten = lenType.encode.bytesWritten + value.length
       return buffer
     },
-    decode: function (buffer, offset) {
+    decode: function decode (buffer, offset) {
       offset = offset | 0
       var length = lenType.decode(buffer, offset)
       offset += lenType.length || lenType.dynamicLength(length)
+      decode.bytesRead = lenType.decode.bytesRead + length
       return buffer.slice(offset, offset + length)
     },
     dynamicLength: function (value) {
@@ -155,7 +181,7 @@ exports.varint = varint
 
 exports.vararray = function (lenType, itemType) {
   return {
-    encode: function (value, buffer, offset) {
+    encode: function encode (value, buffer, offset) {
       if(!Array.isArray(value))
         throw new Error('can only encode arrays')
       if(!buffer) {
@@ -165,21 +191,25 @@ exports.vararray = function (lenType, itemType) {
       var contentLength = value.length*itemType.length
       lenType.encode(contentLength, buffer, offset)
       offset += lenType.length || lenType.dynamicLength(contentLength)
+      encode.bytesWritten = lenType.encode.bytesWritten
       value.forEach(function (e) {
         itemType.encode(e, buffer, offset)
         offset += itemType.length || itemType.dynamicLength(e)
+        encode.bytesWritten += itemType.encode.bytesWritten
       })
       return buffer
     },
-    decode: function (buffer, offset) {
+    decode: function decode (buffer, offset) {
       offset = offset | 0
       var length = lenType.decode(buffer, offset)
       offset += lenType.length || lenType.dynamicLength(length)
       o = offset
+      decode.bytesRead = lenType.decode.bytesRead
       var array = []
       while(o < offset + length) {
         var last = itemType.decode(buffer, o)
         o += itemType.length || itemType.dynamicLength(last)
+        decode.bytesRead += itemType.decode.bytesRead
         array.push(last)
       }
       return array
