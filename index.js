@@ -7,11 +7,11 @@ var ONE = 128, TWO = 128*128, THREE = 128*128*128, FOUR = 128*128*128*128
 
 varint.dynamicLength = function (v) {
   return (
-    v <= ONE   ? 1
-  : v <= TWO   ? 2
-  : v <= THREE ? 3
-  : v <= FOUR  ? 4
-  :              5
+    v < ONE   ? 1
+  : v < TWO   ? 2
+  : v < THREE ? 3
+  : v < FOUR  ? 4
+  :             5
   )
 }
 
@@ -50,6 +50,7 @@ exports = module.exports = function (parts) {
         parts[k].encode(obj[k], b, offset)
         offset += parts[k].encode.bytesWritten
       }
+
       encode.bytesWritten = offset - _offset
       return b
     },
@@ -61,6 +62,7 @@ exports = module.exports = function (parts) {
         obj[k] = parts[k].decode(buffer, offset)
         offset += parts[k].decode.bytesRead
       }
+
       decode.bytesRead = offset - _offset
       return obj
     },
@@ -72,6 +74,7 @@ exports = module.exports = function (parts) {
 function createNumber(type, len) {
   var read = Buffer.prototype['read' + type]
   var write = Buffer.prototype['write' + type]
+
   function encode (value, b, offset) {
     b = b || new Buffer(len)
     write.call(b, value, offset | 0)
@@ -159,18 +162,27 @@ exports.varbuf = function (lenType) {
 exports.varint = varint
 
 exports.vararray = function (lenType, itemType) {
+  function contentLength(array) {
+    return  ( itemType.length
+            ? itemType.length * array.length
+            : array.reduce(function (acc, item) {
+                return acc + itemType.dynamicLength(item)
+              }, 0))
+  }
+
   return {
     encode: function encode (value, buffer, offset) {
       if(!Array.isArray(value))
         throw new Error('can only encode arrays')
+      var length = contentLength(value)
+      var ll = lenType.length || lenType.dynamicLength(length)
+      console.log('lengths', ll, length)
       if(!buffer) {
-        buffer = new Buffer(this.dynamicLength(value))
+        buffer = new Buffer(ll + length)
         offset = 0
       }
       var _offset = offset
-      //this currently only works with static length items.
-      var contentLength = value.length*itemType.length
-      lenType.encode(contentLength, buffer, offset)
+      lenType.encode(length, buffer, offset)
       offset += lenType.encode.bytesWritten
 
       value.forEach(function (e) {
@@ -195,10 +207,10 @@ exports.vararray = function (lenType, itemType) {
       return array
     },
     dynamicLength: function (value) {
-      var contentLength = value.length*itemType.length
+      var length = contentLength(value)
       return (
-        contentLength
-      + (lenType.length || lenType.dynamicLength(contentLength))
+        contentLength(value)
+      + (lenType.length || lenType.dynamicLength(length))
       )
     }
   }
