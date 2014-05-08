@@ -8,8 +8,12 @@ tape('simple', function (t) {
   var double = b.DoubleBE
 
   t.equal(byte.decode(byte.encode(9)), 9)
+  t.equal(byte.decode.bytesRead, 1)
+  t.equal(byte.encode.bytesWritten, 1)
   var r = Math.random()
   t.equal(double.decode(double.encode(r)), r)
+  t.equal(double.decode.bytesRead, 8)
+  t.equal(double.encode.bytesWritten, 8)
   t.end()
 })
 
@@ -24,9 +28,11 @@ tape('vector', function (t) {
 
   var v = {x: 1, y: 2, z: 3}
   var buffer = vector.encode(v)
+  t.equal(vector.encode.bytesWritten, 24)
   console.log(buffer)
   t.equal(buffer.length, vector.length)
   t.deepEqual(vector.decode(buffer), v)
+  t.equal(vector.decode.bytesRead, 24)
   t.end()
 })
 
@@ -46,10 +52,13 @@ tape('buffer', function (t) {
     hash: crypto.createHash('sha256').digest()
   }
   var buffer = message.encode(expected)
-
+  t.equal(message.encode.bytesWritten, 33)
+  t.equal(sha256.encode.bytesWritten, 32)
   t.equal(buffer.length, 33)
 
   t.deepEqual(message.decode(buffer), expected)
+  t.equal(sha256.decode.bytesRead, 32)
+  t.equal(message.decode.bytesRead, 33)
   t.end()
 
 })
@@ -85,9 +94,11 @@ tape('varbuf + static', function (t) {
   }
 
   var buffer = message.encode(expected)
-  console.log(buffer)
+  var expectedLength = 32 + 32 + 4 + 32 + expected.message.length + 1
+  t.equal(message.encode.bytesWritten, expectedLength)
 
   t.deepEqual(message.decode(buffer), expected)
+  t.equal(message.decode.bytesRead, expectedLength)
 
   t.end()
 
@@ -115,7 +126,9 @@ tape('varint buffer', function (t) {
 
   console.log(buffer)
   t.equal(buffer.length, expected.length + 2)
+  t.equal(buf.encode.bytesWritten, expected.length + 2)
   t.deepEqual(buf.decode(buffer), expected)
+  t.equal(buf.decode.bytesRead, expected.length + 2)
   t.end()
 })
 
@@ -129,9 +142,12 @@ tape('vararray', function (t) {
     Math.random(), Math.random(), Math.random(), Math.random(),
   ]
 
-  t.equal(array.dynamicLength(expected), 1 + 8*4*4)
+  var expectedLength = 1 + 8*4*4
+  t.equal(array.dynamicLength(expected), expectedLength)
   var buffer = array.encode(expected)
+  t.equal(array.encode.bytesWritten, expectedLength)
   console.log(buffer)
   t.deepEqual(array.decode(buffer), expected)
+  t.equal(array.decode.bytesRead, expectedLength)
   t.end()
 })
