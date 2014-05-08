@@ -4,8 +4,8 @@ var b = require('../')
 
 tape('simple', function (t) {
 
-  var byte = b.int8
-  var double = b.DoubleBE
+  var byte = b.byte
+  var double = b.Double
 
   t.equal(byte.decode(byte.encode(9)), 9)
   t.equal(byte.decode.bytesRead, 1)
@@ -18,7 +18,7 @@ tape('simple', function (t) {
 })
 
 tape('vector', function (t) {
-  var double = b.DoubleBE
+  var double = b.Double
 
   var vector = b({
     x: double,
@@ -41,7 +41,7 @@ tape('buffer', function (t) {
   var sha256 = b.array(32) //a fixed length buffer
 
   var message = b({
-    num : b.int8,
+    num : b.byte,
     hash: sha256
   })
 
@@ -64,7 +64,7 @@ tape('buffer', function (t) {
 })
 
 tape('varbuf', function (t) {
-  var slice = b.varbuf(b.int8)
+  var slice = b.varbuf(b.byte)
   var expected = new Buffer([1, 2, 3, 4, 5])
   var buffer = slice.encode(expected)
   t.deepEqual(buffer, new Buffer([5, 1, 2, 3, 4, 5]))
@@ -79,9 +79,9 @@ tape('varbuf + static', function (t) {
   var message = b({
     prev: sha256,
     author: sha256,
-    sequence: b.UInt32BE,
+    sequence: b.UInt32,
     type: sha256,
-    message: b.varbuf(b.int8)
+    message: b.varbuf(b.byte)
   })
   var empty = crypto.createHash('sha256').digest()
 
@@ -95,6 +95,7 @@ tape('varbuf + static', function (t) {
 
   var buffer = message.encode(expected)
   var expectedLength = 32 + 32 + 4 + 32 + expected.message.length + 1
+
   t.equal(message.encode.bytesWritten, expectedLength)
 
   t.deepEqual(message.decode(buffer), expected)
@@ -149,5 +150,29 @@ tape('vararray', function (t) {
   console.log(buffer)
   t.deepEqual(array.decode(buffer), expected)
   t.equal(array.decode.bytesRead, expectedLength)
+  t.end()
+})
+
+tape('varstruct inside array', function (t) {
+  var struct = b({
+    i: b.varint,
+    d: b.Double
+  })
+  var array = b.vararray(b.varint, struct)
+
+  var expected = [          //length of varint
+    {i:10, d:0.1},          //1
+    {i:142, d:0.1231},      //2
+    {i:123456,d:1e23},      //3
+    {i:8383838,d:1e23},     //4
+    {i:4000000000, d:2e-17} //5
+  ]
+
+  var buffer = array.encode(expected)
+  var length = 1+2+3+4+5+(5*8)+1
+  t.equal(array.encode.bytesWritten, length, 'bytesWritten')
+  t.equal(array.dynamicLength(expected), length, 'dynamicLength()')
+  t.deepEqual(array.decode(buffer), expected)
+  t.equal(array.decode.bytesRead, array.encode.bytesWritten)
   t.end()
 })
