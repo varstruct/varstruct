@@ -49,46 +49,25 @@ exports = module.exports = function (parts) {
       for(var k in parts) {
         parts[k].encode(obj[k], b, offset)
         offset += parts[k].encode.bytesWritten
-//        offset += lengthOf(parts[k], obj[k])
       }
       encode.bytesWritten = offset - _offset
       return b
     },
-    decode: function decode (buffer) {
-      var obj = {}
-      var offset = decode.bytesRead = 0
+    decode: function decode (buffer, offset) {
+      offset = offset | 0
+      var obj = {}, _offset = offset
+
       for(var k in parts) {
         obj[k] = parts[k].decode(buffer, offset)
-        offset += lengthOf(parts[k], obj[k]) | 0
-        decode.bytesRead += parts[k].decode.bytesRead
+        offset += parts[k].decode.bytesRead
       }
+      decode.bytesRead = offset - _offset
       return obj
     },
     length: funLen ? null : length,
     dynamicLength: getLength
   }
 }
-
-//exports.int8 = ;(function () {
-//  function encode (value, buffer, offset) {
-//    if(!buffer) return new Buffer([value & 0xff])
-//    console.log('byte-set', value, buffer, offset)
-//    buffer[offset] = value
-//    return buffer
-//  }
-//
-//  function decode (buffer, offset) {
-//    return buffer[offset | 0]
-//  }
-//
-//  decode.bytesRead = encode.bytesWritten = 1
-//  return {
-//    encode: encode,
-//    decode: decode,
-//    length: 1
-//  }
-//})()
-//
 
 function createNumber(type, len) {
   var read = Buffer.prototype['read' + type]
@@ -158,17 +137,17 @@ exports.varbuf = function (lenType) {
       buffer = buffer || new Buffer(this.dynamicLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
-      offset += lenType.length || lenType.dynamicLength(value.length)
-      value.copy(buffer, offset, 0, value.length)
-      encode.bytesWritten = lenType.encode.bytesWritten + value.length
+      var bytes = lenType.encode.bytesWritten
+      value.copy(buffer, offset + bytes, 0, value.length)
+      encode.bytesWritten = bytes + value.length
       return buffer
     },
     decode: function decode (buffer, offset) {
       offset = offset | 0
       var length = lenType.decode(buffer, offset)
-      offset += lenType.length || lenType.dynamicLength(length)
-      decode.bytesRead = lenType.decode.bytesRead + length
-      return buffer.slice(offset, offset + length)
+      var bytes = lenType.decode.bytesRead
+      decode.bytesRead = bytes + length
+      return buffer.slice(offset + bytes, offset + bytes + length)
     },
     dynamicLength: function (value) {
       return value.length + (lenType.length || lenType.dynamicLength(value.length))
@@ -188,30 +167,31 @@ exports.vararray = function (lenType, itemType) {
         buffer = new Buffer(this.dynamicLength(value))
         offset = 0
       }
+      var _offset = offset
+      //this currently only works with static length items.
       var contentLength = value.length*itemType.length
       lenType.encode(contentLength, buffer, offset)
-      offset += lenType.length || lenType.dynamicLength(contentLength)
-      encode.bytesWritten = lenType.encode.bytesWritten
+      offset += lenType.encode.bytesWritten
+
       value.forEach(function (e) {
         itemType.encode(e, buffer, offset)
-        offset += itemType.length || itemType.dynamicLength(e)
-        encode.bytesWritten += itemType.encode.bytesWritten
+        offset += itemType.encode.bytesWritten
       })
+      encode.bytesWritten = offset - _offset
       return buffer
     },
     decode: function decode (buffer, offset) {
       offset = offset | 0
+      var _offset = offset
       var length = lenType.decode(buffer, offset)
-      offset += lenType.length || lenType.dynamicLength(length)
-      o = offset
-      decode.bytesRead = lenType.decode.bytesRead
-      var array = []
-      while(o < offset + length) {
-        var last = itemType.decode(buffer, o)
-        o += itemType.length || itemType.dynamicLength(last)
-        decode.bytesRead += itemType.decode.bytesRead
+      offset += lenType.decode.bytesRead
+      var array = [], max = offset + length
+      while(offset < max) {
+        var last = itemType.decode(buffer, offset)
+        offset += itemType.decode.bytesRead
         array.push(last)
       }
+      decode.bytesRead = offset - _offset
       return array
     },
     dynamicLength: function (value) {
