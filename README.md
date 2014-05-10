@@ -90,6 +90,10 @@ If you want Little Endian, append `LE`, for examlpe `Int16LE`
 Use of Big Endian is encouraged. You can also append `BE` to be
 more explicitly Big Endian.
 
+### bound(numberCodec, min, max)
+
+return a codec that errors if the value is not within a range.
+
 ### varint
 
 variable sized integers, this is just reexporting
