@@ -176,3 +176,16 @@ tape('varstruct inside array', function (t) {
   t.equal(array.decode.bytesRead, array.encode.bytesWritten)
   t.end()
 })
+
+tape('bounded numbers', function (t) {
+
+  var max32 = b.bound(b.byte, 0, 32)
+  var buffer = max32.encode(31)
+  console.log(buffer)
+  t.deepEqual(buffer, new Buffer([31]))
+  t.equal(max32.decode(buffer), 31)
+  t.throws(function () {
+    max32.encode(33)
+  })
+  t.end()
+})
