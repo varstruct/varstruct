@@ -43,11 +43,13 @@ exports = module.exports = function (parts) {
     encode: function encode (obj, b, offset) {
       if(!b)
         b = new Buffer(funLen ? getLength(obj) : length )
+      console.log(b, funLen ? getLength(obj) : length)
       offset = offset | 0
       var _offset = offset
 
       for(var k in parts) {
-        parts[k].encode(obj[k], b, offset)
+        console.log('struct encode', k, obj[k])
+       parts[k].encode(obj[k], b, offset)
         offset += parts[k].encode.bytesWritten
       }
 
@@ -113,13 +115,35 @@ exports.UInt32 = exports.UInt32BE
 exports.Float = exports.FloatBE
 exports.Double = exports.DoubleBE
 
+exports.bound = function (codec, min, max) {
+  function check(value) {
+    if(value < min || value > max)
+      throw new Error('value out of bounds:' + value + '(min='+min+', max='+max+')')
+  }
+  return {
+    encode: function encode (value, b, o) {
+      check(value)
+      b = codec.encode(value, b, o)
+      encode.bytesWritten = codec.encode.bytesWritten
+      return b
+    },
+    decode: codec.decode,
+    length: codec.length || null,
+    dynamicLength: codec.dynamicLength ? function (value) {
+      check(value)
+      return codec.dynamicLength(value)
+    } : null
+  }
+}
+
 exports.buffer =
 exports.array = function (len) {
 
   function encode (value, b, offset) {
     //already encodes a buffer, so if there is no b just return.
     if(!b) return value
-    value.copy(b, offset, 0, len)
+    console.log('EncodeBuffer', value, offset, len, value.length)
+    value.copy(b, offset | 0, 0, len)
     return b
   }
   function decode (buffer, offset) {
@@ -137,7 +161,7 @@ exports.array = function (len) {
 exports.varbuf = function (lenType) {
   return {
     encode: function encode (value, buffer, offset) {
-      buffer = buffer || new Buffer(this.dynamicLength(value) )
+       buffer = buffer || new Buffer(this.dynamicLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
       var bytes = lenType.encode.bytesWritten
