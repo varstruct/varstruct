@@ -43,12 +43,10 @@ exports = module.exports = function (parts) {
     encode: function encode (obj, b, offset) {
       if(!b)
         b = new Buffer(funLen ? getLength(obj) : length )
-      console.log(b, funLen ? getLength(obj) : length)
       offset = offset | 0
       var _offset = offset
 
       for(var k in parts) {
-        console.log('struct encode', k, obj[k])
        parts[k].encode(obj[k], b, offset)
         offset += parts[k].encode.bytesWritten
       }
@@ -142,7 +140,6 @@ exports.array = function (len) {
   function encode (value, b, offset) {
     //already encodes a buffer, so if there is no b just return.
     if(!b) return value
-    console.log('EncodeBuffer', value, offset, len, value.length)
     value.copy(b, offset | 0, 0, len)
     return b
   }
@@ -200,7 +197,7 @@ exports.vararray = function (lenType, itemType) {
         throw new Error('can only encode arrays')
       var length = contentLength(value)
       var ll = lenType.length || lenType.dynamicLength(length)
-      console.log('lengths', ll, length)
+
       if(!buffer) {
         buffer = new Buffer(ll + length)
         offset = 0
