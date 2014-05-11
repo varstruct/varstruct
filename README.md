@@ -83,12 +83,15 @@ If `length` is not provided, `codec.dynamicLength` *must* be.
 return the number of bytes it would take to encode `value`.
 If `dynamicLength` is not provided, `codec.length` *must* be.
 
-### Int8, UInt16, UInt16, Int16, UInt32, Int32, Float, Double
+### Int8, UInt16, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double
 
 number codecs, by default Big Endian.
 If you want Little Endian, append `LE`, for examlpe `Int16LE`
 Use of Big Endian is encouraged. You can also append `BE` to be
 more explicitly Big Endian.
+
+64 bit ints are actually only 53 bit ints, but they will still be
+written to 8 bytes. taken from [int53](https://github.com/dannycoates/int53)
 
 ### bound(numberCodec, min, max)
 
