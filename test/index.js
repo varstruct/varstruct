@@ -189,3 +189,23 @@ tape('bounded numbers', function (t) {
   })
   t.end()
 })
+
+tape('64bit ints', function (t) {
+  var date = Date.now()
+  var buffer = b.UInt64.encode(date)
+  t.equal(buffer.length, 8)
+  t.equal(b.UInt64.encode.bytesWritten, 8)
+  t.equal(b.UInt64.decode(buffer), date)
+  t.equal(b.UInt64.decode.bytesRead, 8)
+
+  var buffer2 = b.UInt64LE.encode(date)
+  t.equal(buffer2.length, 8)
+  t.equal(b.UInt64LE.encode.bytesWritten, 8)
+  t.equal(b.UInt64LE.decode(buffer2), date)
+  t.equal(b.UInt64LE.decode.bytesRead, 8)
+
+
+  t.notDeepEqual(buffer, buffer2)
+
+  t.end()
+})
