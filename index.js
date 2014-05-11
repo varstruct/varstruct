@@ -1,5 +1,5 @@
 var varint = require('varint')
-
+var int53 = require('int53')
 var ONE = 128, TWO = 128*128, THREE = 128*128*128, FOUR = 128*128*128*128
 
 //I'll make this into a pull request for varint later
@@ -112,6 +112,27 @@ exports.UInt16 = exports.UInt16BE
 exports.UInt32 = exports.UInt32BE
 exports.Float = exports.FloatBE
 exports.Double = exports.DoubleBE
+
+function createStatic(write, read, len) {
+  function encode(v,b,o) {
+    if(!b) b = new Buffer(len)
+    write(v, b, o|0)
+    return b
+  }
+  function decode (b, o) {
+    return read(b, o|0)
+  }
+  decode.bytesRead = encode.bytesWritten = len
+  return {
+    encode: encode,
+    decode: decode,
+    length: len
+  }
+}
+
+exports.UInt64 =
+exports.UInt64BE = createStatic(int53.writeUInt64BE, int53.readUInt64BE, 8)
+exports.UInt64LE = createStatic(int53.writeUInt64LE, int53.readUInt64LE, 8)
 
 exports.bound = function (codec, min, max) {
   function check(value) {
