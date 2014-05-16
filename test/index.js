@@ -144,7 +144,7 @@ tape('vararray', function (t) {
   ]
 
   var expectedLength = 1 + 8*4*4
-  t.equal(array.dynamicLength(expected), expectedLength)
+  t.equal(array.encodingLength(expected), expectedLength)
   var buffer = array.encode(expected)
   t.equal(array.encode.bytesWritten, expectedLength)
   console.log(buffer)
@@ -171,7 +171,7 @@ tape('varstruct inside array', function (t) {
   var buffer = array.encode(expected)
   var length = 1+2+3+4+5+(5*8)+1
   t.equal(array.encode.bytesWritten, length, 'bytesWritten')
-  t.equal(array.dynamicLength(expected), length, 'dynamicLength()')
+  t.equal(array.encodingLength(expected), length, 'dynamicLength()')
   t.deepEqual(array.decode(buffer), expected)
   t.equal(array.decode.bytesRead, array.encode.bytesWritten)
   t.end()

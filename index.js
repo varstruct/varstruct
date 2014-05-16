@@ -1,19 +1,8 @@
 var varint = require('varint')
 var int53 = require('int53')
-var ONE = 128, TWO = 128*128, THREE = 128*128*128, FOUR = 128*128*128*128
 
 //I'll make this into a pull request for varint later
 //if this turns out to be a good idea.
-
-varint.dynamicLength = function (v) {
-  return (
-    v < ONE   ? 1
-  : v < TWO   ? 2
-  : v < THREE ? 3
-  : v < FOUR  ? 4
-  :             5
-  )
-}
 
 function reduce(obj, iter, acc) {
   for(var k in obj)
@@ -30,7 +19,7 @@ exports = module.exports = function (parts) {
   }, 0)
 
   function lengthOf(part, value) {
-    return part.length || part.dynamicLength(value)
+    return part.length || part.encodingLength(value)
   }
 
   function getLength(obj) {
@@ -67,7 +56,7 @@ exports = module.exports = function (parts) {
       return obj
     },
     length: funLen ? null : length,
-    dynamicLength: getLength
+    encodingLength: getLength
   }
 }
 
@@ -148,7 +137,7 @@ exports.bound = function (codec, min, max) {
     },
     decode: codec.decode,
     length: codec.length || null,
-    dynamicLength: codec.dynamicLength ? function (value) {
+    encodingLength: codec.encodingLength ? function (value) {
       check(value)
       return codec.dynamicLength(value)
     } : null
@@ -179,7 +168,7 @@ exports.array = function (len) {
 exports.varbuf = function (lenType) {
   return {
     encode: function encode (value, buffer, offset) {
-       buffer = buffer || new Buffer(this.dynamicLength(value) )
+      buffer = buffer || new Buffer(this.encodingLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
       var bytes = lenType.encode.bytesWritten
@@ -194,8 +183,8 @@ exports.varbuf = function (lenType) {
       decode.bytesRead = bytes + length
       return buffer.slice(offset + bytes, offset + bytes + length)
     },
-    dynamicLength: function (value) {
-      return value.length + (lenType.length || lenType.dynamicLength(value.length))
+    encodingLength: function (value) {
+      return value.length + (lenType.length || lenType.encodingLength(value.length))
     }
   }
 }
@@ -208,7 +197,7 @@ exports.vararray = function (lenType, itemType) {
     return  ( itemType.length
             ? itemType.length * array.length
             : array.reduce(function (acc, item) {
-                return acc + itemType.dynamicLength(item)
+                return acc + itemType.encodingLength(item)
               }, 0))
   }
 
@@ -217,7 +206,7 @@ exports.vararray = function (lenType, itemType) {
       if(!Array.isArray(value))
         throw new Error('can only encode arrays')
       var length = contentLength(value)
-      var ll = lenType.length || lenType.dynamicLength(length)
+      var ll = lenType.length || lenType.encodingLength(length)
 
       if(!buffer) {
         buffer = new Buffer(ll + length)
@@ -248,11 +237,11 @@ exports.vararray = function (lenType, itemType) {
       decode.bytesRead = offset - _offset
       return array
     },
-    dynamicLength: function (value) {
+    encodingLength: function (value) {
       var length = contentLength(value)
       return (
         contentLength(value)
-      + (lenType.length || lenType.dynamicLength(length))
+      + (lenType.length || lenType.encodingLength(length))
       )
     }
   }
