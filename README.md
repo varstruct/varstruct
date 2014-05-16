@@ -78,10 +78,10 @@ if this codec always encodes the same length,
 set an integer property `length`
 If `length` is not provided, `codec.dynamicLength` *must* be.
 
-#### optional: codec.dynamicLength(value)
+#### optional: codec.encodingLength(value)
 
 return the number of bytes it would take to encode `value`.
-If `dynamicLength` is not provided, `codec.length` *must* be.
+If `encodingLength` is not provided, `codec.length` *must* be.
 
 ### Int8, UInt16, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double
 
