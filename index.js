@@ -139,7 +139,7 @@ exports.bound = function (codec, min, max) {
     length: codec.length || null,
     encodingLength: codec.encodingLength ? function (value) {
       check(value)
-      return codec.dynamicLength(value)
+      return codec.encodingLength(value)
     } : null
   }
 }
