@@ -187,8 +187,19 @@ tape('bounded numbers', function (t) {
   t.throws(function () {
     max32.encode(33)
   })
+
+  var max1024 = b.bound(b.varint, 0, 1024)
+  var buffer = max1024.encode(999)
+
+  t.deepEqual(buffer, b.varint.encode(999))
+  t.equal(max1024.decode(buffer), 999)
+  t.throws(function () {
+    max1024.encode(1025)
+  })
+
   t.end()
 })
+
 
 tape('64bit ints', function (t) {
   var date = Date.now()
@@ -209,3 +220,5 @@ tape('64bit ints', function (t) {
 
   t.end()
 })
+
+
