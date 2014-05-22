@@ -100,7 +100,7 @@ return a codec that errors if the value is not within a range.
 ### varint
 
 variable sized integers, this is just reexporting
-[chrisdickenson/varint](https://github.com/chrisdickenson/varint)
+[chrisdickinson/varint](https://github.com/chrisdickinson/varint)
 
 
 ### varstruct({name: codec})
