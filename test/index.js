@@ -237,10 +237,19 @@ tape('varbuf: buffer out of range', function (t) {
     vb.decode(buffer.slice(0, 40))
     console.log('expected a throw')
   })
-  t.throws(function () {
-    vb.decode(buffer.slice(40))
-    console.log('expected a throw')
-  })
+  var l = buffer.length
+  while(l--)
+    t.throws(function () {
+      vb.decode(buffer.slice(0, l))
+      console.log('expected a throw')
+    })
+//this isn't a good test, because SOMETIMES this produces
+//a valid varbuf
+//  t.throws(function () {
+//    var value = vb.decode(buffer.slice(40))
+//    console.log('expected a throw, got:', value, random)
+//  })
+
   t.deepEqual(vb.decode(buffer), random)
   t.end()
 })
