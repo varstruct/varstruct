@@ -182,7 +182,7 @@ exports.varbuf = function (lenType) {
       var length = lenType.decode(buffer, offset)
       var bytes = lenType.decode.bytesRead
       decode.bytesRead = bytes + length
-      if(bytes + offset + length > buffer.length)
+      if(offset + bytes + length > buffer.length)
         throw new Error('read out of buffer range')
       return buffer.slice(offset + bytes, offset + bytes + length)
     },
@@ -231,6 +231,10 @@ exports.vararray = function (lenType, itemType) {
       var _offset = offset
       var length = lenType.decode(buffer, offset)
       offset += lenType.decode.bytesRead
+      if(offset + length < buffer.length)
+        throw new Error('buffer too small to contain vararray length:' + length)
+
+
       var array = [], max = offset + length
       while(offset < max) {
         var last = itemType.decode(buffer, offset)
