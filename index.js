@@ -153,6 +153,8 @@ exports.array = function (len) {
     return b
   }
   function decode (buffer, offset) {
+    if(buffer.length < offset + len)
+      throw new Error('buffer to short to contain length:' + len)
     return buffer.slice(offset, offset + len)
   }
   encode.bytesWritten = decode.bytesRead = len
@@ -180,6 +182,8 @@ exports.varbuf = function (lenType) {
       var length = lenType.decode(buffer, offset)
       var bytes = lenType.decode.bytesRead
       decode.bytesRead = bytes + length
+      if(bytes + offset + length > buffer.length)
+        throw new Error('read out of buffer range')
       return buffer.slice(offset + bytes, offset + bytes + length)
     },
     encodingLength: function (value) {
