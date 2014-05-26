@@ -59,6 +59,10 @@ tape('buffer', function (t) {
   t.deepEqual(message.decode(buffer), expected)
   t.equal(sha256.decode.bytesRead, 32)
   t.equal(message.decode.bytesRead, 33)
+
+  t.throws(function () {
+    message.decode(buffer.slice(0, 16))
+  })
   t.end()
 
 })
@@ -225,4 +229,18 @@ tape('64bit ints', function (t) {
   t.end()
 })
 
-
+tape('varbuf: buffer out of range', function (t) {
+  var vb = b.varbuf(b.varint)
+  var random = crypto.randomBytes(100)
+  var buffer = vb.encode(random)
+  t.throws(function () {
+    vb.decode(buffer.slice(0, 40))
+    console.log('expected a throw')
+  })
+  t.throws(function () {
+    vb.decode(buffer.slice(40))
+    console.log('expected a throw')
+  })
+  t.deepEqual(vb.decode(buffer), random)
+  t.end()
+})
