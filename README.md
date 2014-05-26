@@ -72,6 +72,9 @@ decode the `value` encoded in `buffer` starting at `offset`.
 `offset` defaults to `0` if not provided.
 Return the new decoded value.
 
+`decode` *must* throw an error if `buffer` is not long enough
+to contain a valid value after `offset`.
+
 #### optional integer: codec.length
 
 if this codec always encodes the same length,
