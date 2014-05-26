@@ -178,6 +178,18 @@ tape('varstruct inside array', function (t) {
   t.equal(array.encodingLength(expected), length, 'dynamicLength()')
   t.deepEqual(array.decode(buffer), expected)
   t.equal(array.decode.bytesRead, array.encode.bytesWritten)
+
+  var l = buffer.length
+
+  while(l--)
+    t.throws(function () {
+      //should always throw, because the length
+      //will be wrong, even if the cut falls between two structs.
+      
+      array.decode(buffer.slice(0, l))
+
+    })
+
   t.end()
 })
 
@@ -226,6 +238,13 @@ tape('64bit ints', function (t) {
 
   t.notDeepEqual(buffer, buffer2)
 
+  var l = buffer.length
+  while(l--)
+    t.throws(function () {
+      b.UInt64.decode(buffer.slice(0, l))
+      b.UInt64LE.decode(buffer2.slice(0, l))
+    })
+
   t.end()
 })
 
@@ -243,8 +262,9 @@ tape('varbuf: buffer out of range', function (t) {
       vb.decode(buffer.slice(0, l))
       console.log('expected a throw')
     })
-//this isn't a good test, because SOMETIMES this produces
-//a valid varbuf
+
+// This is a bad test, because SOMETIMES
+// the random bytes are a valid varbuf that fits in the buffer.
 //  t.throws(function () {
 //    var value = vb.decode(buffer.slice(40))
 //    console.log('expected a throw, got:', value, random)
@@ -253,3 +273,5 @@ tape('varbuf: buffer out of range', function (t) {
   t.deepEqual(vb.decode(buffer), random)
   t.end()
 })
+
+tape
