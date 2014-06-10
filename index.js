@@ -49,6 +49,10 @@ exports = module.exports = function (parts) {
 
       for(var k in parts) {
         obj[k] = parts[k].decode(buffer, offset)
+        if(undefined === obj[k]) {
+          decode.bytesRead = 0
+          return undefined
+        }
         offset += parts[k].decode.bytesRead
       }
 
@@ -159,8 +163,12 @@ exports.array = function (len) {
     return b
   }
   function decode (buffer, offset) {
-    if(buffer.length < offset + len)
-      throw new Error('buffer to short to contain length:' + len)
+    offset = offset | 0
+    if(buffer.length < offset + len) {
+      decode.bytesRead = 0
+      return undefined
+    }
+    decode.bytesRead = len
     return buffer.slice(offset, offset + len)
   }
   encode.bytesWritten = decode.bytesRead = len
