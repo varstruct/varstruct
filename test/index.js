@@ -60,9 +60,10 @@ tape('buffer', function (t) {
   t.equal(sha256.decode.bytesRead, 32)
   t.equal(message.decode.bytesRead, 33)
 
-  t.throws(function () {
-    message.decode(buffer.slice(0, 16))
-  })
+
+  t.equal(message.decode(buffer.slice(0, 16)), undefined)
+  t.equal(message.decode.bytesRead, 0)
+
   t.end()
 
 })
