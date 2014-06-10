@@ -181,14 +181,12 @@ tape('varstruct inside array', function (t) {
 
   var l = buffer.length
 
-  while(l--)
-    t.throws(function () {
-      //should always throw, because the length
-      //will be wrong, even if the cut falls between two structs.
-      
-      array.decode(buffer.slice(0, l))
-
-    })
+  while(l--) {
+    //should always throw, because the length
+    //will be wrong, even if the cut falls between two structs.
+    t.equal(array.decode(buffer.slice(0, l)), undefined)
+    t.equal(array.decode.bytesRead, 0)
+  }
 
   t.end()
 })
@@ -215,7 +213,6 @@ tape('bounded numbers', function (t) {
   t.throws(function () {
     max1024.encode(1025)
   })
-
   t.equal(max1024.encodingLength(999), 2)
 
   t.end()
@@ -239,11 +236,12 @@ tape('64bit ints', function (t) {
   t.notDeepEqual(buffer, buffer2)
 
   var l = buffer.length
-  while(l--)
-    t.throws(function () {
-      b.UInt64.decode(buffer.slice(0, l))
-      b.UInt64LE.decode(buffer2.slice(0, l))
-    })
+  while(l--) {
+    t.equal(b.UInt64.decode(buffer.slice(0, l)), undefined)
+    t.equal(b.UInt64.decode.bytesRead, 0)
+    t.equal(b.UInt64LE.decode(buffer2.slice(0, l)), undefined)
+    t.equal(b.UInt64LE.decode.bytesRead, 0)
+  }
 
   t.end()
 })
@@ -252,16 +250,10 @@ tape('varbuf: buffer out of range', function (t) {
   var vb = b.varbuf(b.varint)
   var random = crypto.randomBytes(100)
   var buffer = vb.encode(random)
-  t.throws(function () {
-    vb.decode(buffer.slice(0, 40))
-    console.log('expected a throw')
-  })
+  t.equal(vb.decode(buffer.slice(0, 40)), undefined)
   var l = buffer.length
   while(l--)
-    t.throws(function () {
-      vb.decode(buffer.slice(0, l))
-      console.log('expected a throw')
-    })
+    t.equal(vb.decode(buffer.slice(0, l)), undefined)
 
 // This is a bad test, because SOMETIMES
 // the random bytes are a valid varbuf that fits in the buffer.
