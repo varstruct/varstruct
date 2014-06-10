@@ -108,7 +108,13 @@ function createStatic(write, read, len) {
     return b
   }
   function decode (b, o) {
-    return read(b, o|0)
+    try {
+      decode.bytesRead = len
+      return read(b, o|0)
+    } catch(err) {
+      decode.bytesRead = 0
+      return undefined
+    }
   }
   decode.bytesRead = encode.bytesWritten = len
   return {
@@ -180,10 +186,16 @@ exports.varbuf = function (lenType) {
     decode: function decode (buffer, offset) {
       offset = offset | 0
       var length = lenType.decode(buffer, offset)
+      if(length === undefined) {
+        decode.bytesRead = 0
+        return undefined
+      }
       var bytes = lenType.decode.bytesRead
       decode.bytesRead = bytes + length
-      if(offset + bytes + length > buffer.length)
-        throw new Error('read out of buffer range')
+      if(offset + bytes + length > buffer.length) {
+        decode.bytesRead = 0
+        return undefined
+      }
       return buffer.slice(offset + bytes, offset + bytes + length)
     },
     encodingLength: function (value) {
@@ -210,7 +222,6 @@ exports.vararray = function (lenType, itemType) {
         throw new Error('can only encode arrays')
       var length = contentLength(value)
       var ll = lenType.length || lenType.encodingLength(length)
-
       if(!buffer) {
         buffer = new Buffer(ll + length)
         offset = 0
@@ -231,9 +242,10 @@ exports.vararray = function (lenType, itemType) {
       var _offset = offset
       var length = lenType.decode(buffer, offset)
       offset += lenType.decode.bytesRead
-      if(offset + length < buffer.length)
-        throw new Error('buffer too small to contain vararray length:' + length)
-
+      if(length === undefined || offset + length > buffer.length) {
+        decode.bytesRead = 0
+        return undefined
+      }
 
       var array = [], max = offset + length
       while(offset < max) {
