@@ -8,7 +8,7 @@
     "url": "git://github.com/dominictarr/varstruct.git"
   },
   "dependencies": {
-    "varint": "git://github.com/dominictarr/varint.git",
+    "varint": "~2.0.0",
     "int53": "~0.2.3"
   },
   "devDependencies": {
