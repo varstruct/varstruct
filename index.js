@@ -37,10 +37,10 @@ exports = module.exports = function (parts) {
 
       for(var k in parts) {
        parts[k].encode(obj[k], b, offset)
-        offset += parts[k].encode.bytesWritten
+        offset += parts[k].encode.bytes
       }
 
-      encode.bytesWritten = offset - _offset
+      encode.bytes = offset - _offset
       return b
     },
     decode: function decode (buffer, offset) {
@@ -50,13 +50,13 @@ exports = module.exports = function (parts) {
       for(var k in parts) {
         obj[k] = parts[k].decode(buffer, offset)
         if(undefined === obj[k]) {
-          decode.bytesRead = 0
+          decode.bytes = 0
           return undefined
         }
-        offset += parts[k].decode.bytesRead
+        offset += parts[k].decode.bytes
       }
 
-      decode.bytesRead = offset - _offset
+      decode.bytes = offset - _offset
       return obj
     },
     length: funLen ? null : length,
@@ -77,7 +77,7 @@ function createNumber(type, len) {
     return read.call(buffer, offset|0)
   }
 
-  encode.bytesWritten = decode.bytesRead = len
+  encode.bytes = decode.bytes = len
   return {
     encode: encode,
     decode: decode,
@@ -102,7 +102,7 @@ exports.DoubleLE = createNumber('DoubleLE', 8)
 
 exports.UInt16 = exports.UInt16BE
 exports.UInt32 = exports.UInt32BE
-exports.Float = exports.FloatBE
+exports.Float  = exports.FloatBE
 exports.Double = exports.DoubleBE
 
 function createStatic(write, read, len) {
@@ -113,14 +113,14 @@ function createStatic(write, read, len) {
   }
   function decode (b, o) {
     try {
-      decode.bytesRead = len
+      decode.bytes = len
       return read(b, o|0)
     } catch(err) {
-      decode.bytesRead = 0
+      decode.bytes = 0
       return undefined
     }
   }
-  decode.bytesRead = encode.bytesWritten = len
+  decode.bytes = encode.bytes = len
   return {
     encode: encode,
     decode: decode,
@@ -141,7 +141,7 @@ exports.bound = function (codec, min, max) {
     encode: function encode (value, b, o) {
       check(value)
       b = codec.encode(value, b, o)
-      encode.bytesWritten = codec.encode.bytesWritten
+      encode.bytes = codec.encode.bytes
       return b
     },
     decode: codec.decode,
@@ -171,7 +171,7 @@ exports.array = function (len) {
     decode.bytesRead = len
     return buffer.slice(offset, offset + len)
   }
-  encode.bytesWritten = decode.bytesRead = len
+  encode.bytes = decode.bytes = len
 
   return {
     encode: encode,
@@ -186,22 +186,22 @@ exports.varbuf = function (lenType) {
       buffer = buffer || new Buffer(this.encodingLength(value) )
       offset = offset | 0
       buffer = lenType.encode(value.length, buffer, offset)
-      var bytes = lenType.encode.bytesWritten
+      var bytes = lenType.encode.bytes
       value.copy(buffer, offset + bytes, 0, value.length)
-      encode.bytesWritten = bytes + value.length
+      encode.bytes = bytes + value.length
       return buffer
     },
     decode: function decode (buffer, offset) {
       offset = offset | 0
       var length = lenType.decode(buffer, offset)
       if(length === undefined) {
-        decode.bytesRead = 0
+        decode.bytes = 0
         return undefined
       }
-      var bytes = lenType.decode.bytesRead
-      decode.bytesRead = bytes + length
+      var bytes = lenType.decode.bytes
+      decode.bytes = bytes + length
       if(offset + bytes + length > buffer.length) {
-        decode.bytesRead = 0
+        decode.bytes = 0
         return undefined
       }
       return buffer.slice(offset + bytes, offset + bytes + length)
@@ -236,32 +236,32 @@ exports.vararray = function (lenType, itemType) {
       }
       var _offset = offset
       lenType.encode(length, buffer, offset)
-      offset += lenType.encode.bytesWritten
+      offset += lenType.encode.bytes
 
       value.forEach(function (e) {
         itemType.encode(e, buffer, offset)
-        offset += itemType.encode.bytesWritten
+        offset += itemType.encode.bytes
       })
-      encode.bytesWritten = offset - _offset
+      encode.bytes = offset - _offset
       return buffer
     },
     decode: function decode (buffer, offset) {
       offset = offset | 0
       var _offset = offset
       var length = lenType.decode(buffer, offset)
-      offset += lenType.decode.bytesRead
+      offset += lenType.decode.bytes
       if(length === undefined || offset + length > buffer.length) {
-        decode.bytesRead = 0
+        decode.bytes = 0
         return undefined
       }
 
       var array = [], max = offset + length
       while(offset < max) {
         var last = itemType.decode(buffer, offset)
-        offset += itemType.decode.bytesRead
+        offset += itemType.decode.bytes
         array.push(last)
       }
-      decode.bytesRead = offset - _offset
+      decode.bytes = offset - _offset
       return array
     },
     encodingLength: function (value) {
