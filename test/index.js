@@ -8,12 +8,12 @@ tape('simple', function (t) {
   var double = b.Double
 
   t.equal(byte.decode(byte.encode(9)), 9)
-  t.equal(byte.decode.bytesRead, 1)
-  t.equal(byte.encode.bytesWritten, 1)
+  t.equal(byte.decode.bytes, 1)
+  t.equal(byte.encode.bytes, 1)
   var r = Math.random()
   t.equal(double.decode(double.encode(r)), r)
-  t.equal(double.decode.bytesRead, 8)
-  t.equal(double.encode.bytesWritten, 8)
+  t.equal(double.decode.bytes, 8)
+  t.equal(double.encode.bytes, 8)
   t.end()
 })
 
@@ -28,11 +28,11 @@ tape('vector', function (t) {
 
   var v = {x: 1, y: 2, z: 3}
   var buffer = vector.encode(v)
-  t.equal(vector.encode.bytesWritten, 24)
+  t.equal(vector.encode.bytes, 24)
   console.log(buffer)
   t.equal(buffer.length, vector.length)
   t.deepEqual(vector.decode(buffer), v)
-  t.equal(vector.decode.bytesRead, 24)
+  t.equal(vector.decode.bytes, 24)
   t.end()
 })
 
@@ -52,17 +52,17 @@ tape('buffer', function (t) {
     hash: crypto.createHash('sha256').digest()
   }
   var buffer = message.encode(expected)
-  t.equal(message.encode.bytesWritten, 33)
-  t.equal(sha256.encode.bytesWritten, 32)
+  t.equal(message.encode.bytes, 33)
+  t.equal(sha256.encode.bytes, 32)
   t.equal(buffer.length, 33)
 
   t.deepEqual(message.decode(buffer), expected)
-  t.equal(sha256.decode.bytesRead, 32)
-  t.equal(message.decode.bytesRead, 33)
+  t.equal(sha256.decode.bytes, 32)
+  t.equal(message.decode.bytes, 33)
 
 
   t.equal(message.decode(buffer.slice(0, 16)), undefined)
-  t.equal(message.decode.bytesRead, 0)
+  t.equal(message.decode.bytes, 0)
 
   t.end()
 
@@ -101,10 +101,10 @@ tape('varbuf + static', function (t) {
   var buffer = message.encode(expected)
   var expectedLength = 32 + 32 + 4 + 32 + expected.message.length + 1
 
-  t.equal(message.encode.bytesWritten, expectedLength)
+  t.equal(message.encode.bytes, expectedLength)
 
   t.deepEqual(message.decode(buffer), expected)
-  t.equal(message.decode.bytesRead, expectedLength)
+  t.equal(message.decode.bytes, expectedLength)
 
   t.end()
 
@@ -132,9 +132,9 @@ tape('varint buffer', function (t) {
 
   console.log(buffer)
   t.equal(buffer.length, expected.length + 2)
-  t.equal(buf.encode.bytesWritten, expected.length + 2)
+  t.equal(buf.encode.bytes, expected.length + 2)
   t.deepEqual(buf.decode(buffer), expected)
-  t.equal(buf.decode.bytesRead, expected.length + 2)
+  t.equal(buf.decode.bytes, expected.length + 2)
   t.end()
 })
 
@@ -151,10 +151,10 @@ tape('vararray', function (t) {
   var expectedLength = 1 + 8*4*4
   t.equal(array.encodingLength(expected), expectedLength)
   var buffer = array.encode(expected)
-  t.equal(array.encode.bytesWritten, expectedLength)
+  t.equal(array.encode.bytes, expectedLength)
   console.log(buffer)
   t.deepEqual(array.decode(buffer), expected)
-  t.equal(array.decode.bytesRead, expectedLength)
+  t.equal(array.decode.bytes, expectedLength)
   t.end()
 })
 
@@ -175,10 +175,10 @@ tape('varstruct inside array', function (t) {
 
   var buffer = array.encode(expected)
   var length = 1+2+3+4+5+(5*8)+1
-  t.equal(array.encode.bytesWritten, length, 'bytesWritten')
+  t.equal(array.encode.bytes, length, 'bytesWritten')
   t.equal(array.encodingLength(expected), length, 'dynamicLength()')
   t.deepEqual(array.decode(buffer), expected)
-  t.equal(array.decode.bytesRead, array.encode.bytesWritten)
+  t.equal(array.decode.bytes, array.encode.bytes)
 
   var l = buffer.length
 
@@ -186,7 +186,7 @@ tape('varstruct inside array', function (t) {
     //should always throw, because the length
     //will be wrong, even if the cut falls between two structs.
     t.equal(array.decode(buffer.slice(0, l)), undefined)
-    t.equal(array.decode.bytesRead, 0)
+    t.equal(array.decode.bytes, 0)
   }
 
   t.end()
@@ -224,24 +224,24 @@ tape('64bit ints', function (t) {
   var date = Date.now()
   var buffer = b.UInt64.encode(date)
   t.equal(buffer.length, 8)
-  t.equal(b.UInt64.encode.bytesWritten, 8)
+  t.equal(b.UInt64.encode.bytes, 8)
   t.equal(b.UInt64.decode(buffer), date)
-  t.equal(b.UInt64.decode.bytesRead, 8)
+  t.equal(b.UInt64.decode.bytes, 8)
 
   var buffer2 = b.UInt64LE.encode(date)
   t.equal(buffer2.length, 8)
-  t.equal(b.UInt64LE.encode.bytesWritten, 8)
+  t.equal(b.UInt64LE.encode.bytes, 8)
   t.equal(b.UInt64LE.decode(buffer2), date)
-  t.equal(b.UInt64LE.decode.bytesRead, 8)
+  t.equal(b.UInt64LE.decode.bytes, 8)
 
   t.notDeepEqual(buffer, buffer2)
 
   var l = buffer.length
   while(l--) {
     t.equal(b.UInt64.decode(buffer.slice(0, l)), undefined)
-    t.equal(b.UInt64.decode.bytesRead, 0)
+    t.equal(b.UInt64.decode.bytes, 0)
     t.equal(b.UInt64LE.decode(buffer2.slice(0, l)), undefined)
-    t.equal(b.UInt64LE.decode.bytesRead, 0)
+    t.equal(b.UInt64LE.decode.bytes, 0)
   }
 
   t.end()
@@ -267,4 +267,4 @@ tape('varbuf: buffer out of range', function (t) {
   t.end()
 })
 
-tape
+
