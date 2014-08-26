@@ -212,6 +212,25 @@ exports.varbuf = function (lenType) {
   }
 }
 
+exports.varstring = function (lenType, encoding) {
+  encoding = encoding || 'utf8'
+  var vb = exports.varbuf(lenType)
+  return {
+    encode: function encode (value, buffer, offset) {
+      var r = vb.encode(new Buffer(value, encoding), buffer, offset)
+      encode.bytes = vb.encode.bytes
+      return r
+    },
+    decode: function decode (buffer, offset) {
+      var r = vb.decode(buffer, offset).toString(encoding)
+      encode.bytes = vb.encode.bytes
+      return r
+    },
+    encodingLength: function (value) {
+      return vb.encodingLength(new Buffer(value, encoding))
+    }
+  }
+}
 
 exports.varint = varint
 
