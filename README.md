@@ -66,6 +66,9 @@ of `value` into `buffer` starting at `offset`.
 If `value` is the wrong type to be encoded, or there is not enough room
 left in `buffer` after `offset` then throw an error.
 
+After `encode` is called, a codec must set `encode.bytes` to be
+the number of bytes used to encode that value.
+
 #### codec.decode(buffer, offset=0)
 
 decode the `value` encoded in `buffer` starting at `offset`.
@@ -74,6 +77,9 @@ Return the new decoded value.
 
 `decode` *must* throw an error if `buffer` is not long enough
 to contain a valid value after `offset`.
+
+After `decode` is called, a codec must set `decode.bytes` to be
+the number of bytes consumed.
 
 #### optional integer: codec.length
 
