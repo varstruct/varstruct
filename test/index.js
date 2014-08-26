@@ -267,4 +267,12 @@ tape('varbuf: buffer out of range', function (t) {
   t.end()
 })
 
-
+tape('varstrings: store stings with any encoding', function (t) {
+  var vs = b.varstring(b.varint)
+  var string = 'hello world'
+  var buffer = vs.encode(string)
+  t.equal(buffer.length, vs.encode.bytes)
+  t.equal(vs.decode(buffer), string)
+  t.equal(vs.decode.bytes, buffer.length)
+  t.end()
+})
