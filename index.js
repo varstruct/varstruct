@@ -223,7 +223,7 @@ exports.varstring = function (lenType, encoding) {
     },
     decode: function decode (buffer, offset) {
       var r = vb.decode(buffer, offset).toString(encoding)
-      encode.bytes = vb.encode.bytes
+      decode.bytes = vb.encode.bytes
       return r
     },
     encodingLength: function (value) {
