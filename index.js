@@ -1,3 +1,4 @@
+'use strict'
 var varint = require('varint')
 var int53 = require('int53')
 
@@ -36,8 +37,11 @@ exports = module.exports = function (parts) {
       var _offset = offset
 
       for(var k in parts) {
-       parts[k].encode(obj[k], b, offset)
-        offset += parts[k].encode.bytes
+        var part = parts[k]
+        part.encode(obj[k], b, offset)
+        offset += part.encode.bytes
+        if(isNaN(offset))
+          throw new Error('offset cannot be NaN')
       }
 
       encode.bytes = offset - _offset
