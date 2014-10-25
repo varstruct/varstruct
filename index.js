@@ -169,10 +169,10 @@ exports.array = function (len) {
   function decode (buffer, offset) {
     offset = offset | 0
     if(buffer.length < offset + len) {
-      decode.bytesRead = 0
+      decode.bytes = 0
       return undefined
     }
-    decode.bytesRead = len
+    decode.bytes = len
     return buffer.slice(offset, offset + len)
   }
   encode.bytes = decode.bytes = len
