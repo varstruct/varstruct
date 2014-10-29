@@ -78,7 +78,13 @@ function createNumber(type, len) {
     return b
   }
   function decode (buffer, offset) {
-    return read.call(buffer, offset|0)
+    offset = offset | 0
+    if(buffer.length - offset < len) {
+      decode.bytes = 0
+      return
+    }
+    decode.bytes = len
+    return read.call(buffer, offset)
   }
 
   encode.bytes = decode.bytes = len
