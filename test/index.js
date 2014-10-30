@@ -274,5 +274,12 @@ tape('varstrings: store stings with any encoding', function (t) {
   t.equal(buffer.length, vs.encode.bytes)
   t.equal(vs.decode(buffer), string)
   t.equal(vs.decode.bytes, buffer.length)
+
+  var l = string.length
+  while(l--) {
+    t.equal(vs.decode(buffer.slice(0, l)), undefined)
+    t.equal(vs.decode.bytes, 0)
+  }
+
   t.end()
 })
