@@ -232,9 +232,15 @@ exports.varstring = function (lenType, encoding) {
       return r
     },
     decode: function decode (buffer, offset) {
-      var r = vb.decode(buffer, offset).toString(encoding)
+      var r = vb.decode(buffer, offset)
+      if('undefined' === typeof r) {
+        decode.bytes = 0
+        return
+      }
+
       decode.bytes = vb.encode.bytes
-      return r
+      return r.toString(encoding)
+
     },
     encodingLength: function (value) {
       return vb.encodingLength(new Buffer(value, encoding))
