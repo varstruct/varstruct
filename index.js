@@ -238,7 +238,7 @@ exports.varstring = function (lenType, encoding) {
         return
       }
 
-      decode.bytes = vb.encode.bytes
+      decode.bytes = vb.decode.bytes
       return r.toString(encoding)
 
     },
