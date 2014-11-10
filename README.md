@@ -6,6 +6,8 @@ This module makes creating binary formats easy.
 It supports both fixed length structures (like classic c structs),
 and variable (usually length delemited) structures.
 
+[![testling badge](https://ci.testling.com/dominictarr/varstruct.png)](https://ci.testling.com/dominictarr/varstruct)
+
 
 ## Example - a 3d vector
 
