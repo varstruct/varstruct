@@ -100,17 +100,23 @@ exports.int8 =
 exports.Int8 =
 exports.UInt8 = createNumber('UInt8', 1)
 
+exports.Int16BE = createNumber('Int16BE', 2)
 exports.UInt16BE = createNumber('UInt16BE', 2)
+exports.Int32BE = createNumber('Int32BE', 4)
 exports.UInt32BE = createNumber('UInt32BE', 4)
 exports.FloatBE  = createNumber('FloatBE', 4)
 exports.DoubleBE = createNumber('DoubleBE', 8)
 
+exports.Int16LE = createNumber('Int16LE', 2)
 exports.UInt16LE = createNumber('UInt16LE', 2)
+exports.Int32LE = createNumber('Int32LE', 4)
 exports.UInt32LE = createNumber('UInt32LE', 4)
 exports.FloatLE  = createNumber('FloatLE', 4)
 exports.DoubleLE = createNumber('DoubleLE', 8)
 
+exports.Int16 = exports.Int16BE
 exports.UInt16 = exports.UInt16BE
+exports.Int32 = exports.Int32BE
 exports.UInt32 = exports.UInt32BE
 exports.Float  = exports.FloatBE
 exports.Double = exports.DoubleBE
