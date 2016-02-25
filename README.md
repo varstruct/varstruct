@@ -1,13 +1,18 @@
 # varstruct
 
+[![NPM Package](https://img.shields.io/npm/v/varstruct.svg?style=flat-square)](https://www.npmjs.org/package/varstruct)
+[![Build Status](https://img.shields.io/travis/dominictarr/varstruct.svg?branch=master&style=flat-square)](https://travis-ci.org/dominictarr/varstruct)
+[![Dependency status](https://img.shields.io/david/dominictarr/varstruct.svg?style=flat-square)](https://david-dm.org/dominictarr/varstruct#info=dependencies)
+
+[![testling badge](https://ci.testling.com/dominictarr/varstruct.png)](https://ci.testling.com/dominictarr/varstruct)
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 encode/decode variable binary structures.
 
 This module makes creating binary formats easy.
 It supports both fixed length structures (like classic c structs),
 and variable (usually length delemited) structures.
-
-[![testling badge](https://ci.testling.com/dominictarr/varstruct.png)](https://ci.testling.com/dominictarr/varstruct)
-
 
 ## Example - a 3d vector
 
