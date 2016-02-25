@@ -3,7 +3,6 @@ var crypto = require('crypto')
 var b = require('../')
 
 tape('simple', function (t) {
-
   var byte = b.byte
   var double = b.Double
 
@@ -37,11 +36,10 @@ tape('vector', function (t) {
 })
 
 tape('buffer', function (t) {
-
-  var sha256 = b.array(32) //a fixed length buffer
+  var sha256 = b.array(32) // a fixed length buffer
 
   var message = b({
-    num : b.byte,
+    num: b.byte,
     hash: sha256
   })
 
@@ -60,12 +58,10 @@ tape('buffer', function (t) {
   t.equal(sha256.decode.bytes, 32)
   t.equal(message.decode.bytes, 33)
 
-
   t.equal(message.decode(buffer.slice(0, 16)), undefined)
   t.equal(message.decode.bytes, 0)
 
   t.end()
-
 })
 
 tape('varbuf', function (t) {
@@ -78,7 +74,6 @@ tape('varbuf', function (t) {
 })
 
 tape('varbuf + static', function (t) {
-
   var sha256 = b.array(32)
 
   var message = b({
@@ -93,9 +88,11 @@ tape('varbuf + static', function (t) {
   var zeros = new Buffer(32); zeros.fill()
 
   var expected = {
-    prev     : empty, author : empty,
-    sequence : 0,     type   : zeros,
-    message  : new Buffer('hello there this is the first message', 'utf8')
+    prev: empty,
+    author: empty,
+    sequence: 0,
+    type: zeros,
+    message: new Buffer('hello there this is the first message', 'utf8')
   }
 
   var buffer = message.encode(expected)
@@ -107,11 +104,9 @@ tape('varbuf + static', function (t) {
   t.equal(message.decode.bytes, expectedLength)
 
   t.end()
-
 })
 
 tape('varint buffer', function (t) {
-
   var buf = b.varbuf(b.varint)
 
   var buffer = buf.encode(new Buffer('hello'))
@@ -119,16 +114,16 @@ tape('varint buffer', function (t) {
   t.deepEqual(new Buffer([0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f]), buffer)
 
   var expected = new Buffer(
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
+    'hellohellohellohellohellohellohellohellohellohellohellohello\n' +
     'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
-  + 'hellohellohellohellohellohellohellohellohellohellohellohello\n'
   )
 
-  var buffer = buf.encode(expected)
+  buffer = buf.encode(expected)
 
   console.log(buffer)
   t.equal(buffer.length, expected.length + 2)
@@ -139,16 +134,15 @@ tape('varint buffer', function (t) {
 })
 
 tape('vararray', function (t) {
-
   var array = b.vararray(b.byte, b.DoubleBE)
   var expected = [
     Math.random(), Math.random(), Math.random(), Math.random(),
     Math.random(), Math.random(), Math.random(), Math.random(),
     Math.random(), Math.random(), Math.random(), Math.random(),
-    Math.random(), Math.random(), Math.random(), Math.random(),
+    Math.random(), Math.random(), Math.random(), Math.random()
   ]
 
-  var expectedLength = 1 + 8*4*4
+  var expectedLength = 1 + 8 * 4 * 4
   t.equal(array.encodingLength(expected), expectedLength)
   var buffer = array.encode(expected)
   t.equal(array.encode.bytes, expectedLength)
@@ -165,16 +159,16 @@ tape('varstruct inside array', function (t) {
   })
   var array = b.vararray(b.varint, struct)
 
-  var expected = [          //length of varint
-    {i:10, d:0.1},          //1
-    {i:142, d:0.1231},      //2
-    {i:123456,d:1e23},      //3
-    {i:8383838,d:1e23},     //4
-    {i:4000000000, d:2e-17} //5
+  var expected = [            // length of varint
+    {i: 10, d: 0.1},          // 1
+    {i: 142, d: 0.1231},      // 2
+    {i: 123456, d: 1e23},     // 3
+    {i: 8383838, d: 1e23},    // 4
+    {i: 4000000000, d: 2e-17} // 5
   ]
 
   var buffer = array.encode(expected)
-  var length = 1+2+3+4+5+(5*8)+1
+  var length = 1 + 2 + 3 + 4 + 5 + (5 * 8) + 1
   t.equal(array.encode.bytes, length, 'bytesWritten')
   t.equal(array.encodingLength(expected), length, 'dynamicLength()')
   t.deepEqual(array.decode(buffer), expected)
@@ -182,9 +176,9 @@ tape('varstruct inside array', function (t) {
 
   var l = buffer.length
 
-  while(l--) {
-    //should always throw, because the length
-    //will be wrong, even if the cut falls between two structs.
+  while (l--) {
+    // should always throw, because the length
+    // will be wrong, even if the cut falls between two structs.
     t.equal(array.decode(buffer.slice(0, l)), undefined)
     t.equal(array.decode.bytes, 0)
   }
@@ -193,7 +187,6 @@ tape('varstruct inside array', function (t) {
 })
 
 tape('bounded numbers', function (t) {
-
   var max32 = b.bound(b.byte, 0, 32)
   var buffer = max32.encode(31)
   console.log(buffer)
@@ -205,9 +198,8 @@ tape('bounded numbers', function (t) {
 
   t.equal(max32.length, 1)
 
-
   var max1024 = b.bound(b.varint, 0, 1024)
-  var buffer = max1024.encode(999)
+  buffer = max1024.encode(999)
 
   t.deepEqual(buffer, b.varint.encode(999))
   t.equal(max1024.decode(buffer), 999)
@@ -218,7 +210,6 @@ tape('bounded numbers', function (t) {
 
   t.end()
 })
-
 
 tape('64bit ints', function (t) {
   var date = Date.now()
@@ -237,7 +228,7 @@ tape('64bit ints', function (t) {
   t.notDeepEqual(buffer, buffer2)
 
   var l = buffer.length
-  while(l--) {
+  while (l--) {
     t.equal(b.UInt64.decode(buffer.slice(0, l)), undefined)
     t.equal(b.UInt64.decode.bytes, 0)
     t.equal(b.UInt64LE.decode(buffer2.slice(0, l)), undefined)
@@ -253,8 +244,9 @@ tape('varbuf: buffer out of range', function (t) {
   var buffer = vb.encode(random)
   t.equal(vb.decode(buffer.slice(0, 40)), undefined)
   var l = buffer.length
-  while(l--)
+  while (l--) {
     t.equal(vb.decode(buffer.slice(0, l)), undefined)
+  }
 
 // This is a bad test, because SOMETIMES
 // the random bytes are a valid varbuf that fits in the buffer.
@@ -276,7 +268,7 @@ tape('varstrings: store stings with any encoding', function (t) {
   t.equal(vs.decode.bytes, buffer.length)
 
   var l = string.length
-  while(l--) {
+  while (l--) {
     t.equal(vs.decode(buffer.slice(0, l)), undefined)
     t.equal(vs.decode.bytes, 0)
   }
