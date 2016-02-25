@@ -12,10 +12,13 @@
     "int53": "~0.2.3"
   },
   "devDependencies": {
+    "standard": "^6.0.7",
     "tape": "~2.12.3"
   },
   "scripts": {
-    "test": "set -e; for t in test/*.js; do node $t; done"
+    "lint": "standard",
+    "test": "npm run lint && npm run unit",
+    "unit": "tape test/*.js"
   },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT",
