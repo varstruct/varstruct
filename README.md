@@ -87,7 +87,7 @@ the number of bytes consumed.
 
 if this codec always encodes the same length,
 set an integer property `length`
-If `length` is not provided, `codec.dynamicLength` *must* be.
+If `length` is not provided, `codec.encodingLength` *must* be.
 
 #### optional: codec.encodingLength(value)
 
