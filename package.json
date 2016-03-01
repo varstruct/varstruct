@@ -1,40 +1,33 @@
 {
   "name": "varstruct",
-  "description": "encode/decode variable binary structures",
   "version": "4.2.0",
+  "description": "encode/decode variable binary structures",
   "homepage": "https://github.com/dominictarr/varstruct",
+  "bugs": {
+    "url": "https://github.com/dominictarr/varstruct/issues"
+  },
+  "license": "MIT",
+  "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/varstruct.git"
-  },
-  "dependencies": {
-    "varint": "~3.0.1",
-    "int53": "~0.2.3"
-  },
-  "devDependencies": {
-    "standard": "^6.0.7",
-    "tape": "~2.12.3"
+    "url": "https://github.com/dominictarr/varstruct.git"
   },
   "scripts": {
     "lint": "standard",
     "test": "npm run lint && npm run unit",
-    "unit": "tape test/*.js"
+    "unit": "tap --cov test/*.js test/**/*.js"
   },
-  "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
-  "license": "MIT",
-  "testling": {
-    "files": "test/*.js",
-    "browsers": [
-      "ie/8..latest",
-      "firefox/17..latest",
-      "firefox/nightly",
-      "chrome/22..latest",
-      "chrome/canary",
-      "opera/12..latest",
-      "opera/next",
-      "safari/5.1..latest",
-      "ipad/6.0..latest",
-      "iphone/6.0..latest"
-    ]
+  "dependencies": {
+    "int53": "^0.2.4",
+    "typeforce": "^1.6.2",
+    "varint": "^4.0.0"
+  },
+  "devDependencies": {
+    "standard": "^6.0.7",
+    "tap": "^5.7.0"
   }
 }
