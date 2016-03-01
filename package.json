@@ -22,12 +22,11 @@
     "unit": "tap --cov test/*.js test/**/*.js"
   },
   "dependencies": {
-    "int53": "^0.2.4",
-    "typeforce": "^1.6.2",
-    "varint": "^4.0.0"
+    "int53": "^0.2.4"
   },
   "devDependencies": {
     "standard": "^6.0.7",
-    "tap": "^5.7.0"
+    "tap": "^5.7.0",
+    "varuint-bitcoin": "^1.0.0"
   }
 }
