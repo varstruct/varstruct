@@ -4,7 +4,7 @@
 [![Build Status](https://img.shields.io/travis/dominictarr/varstruct.svg?branch=master&style=flat-square)](https://travis-ci.org/dominictarr/varstruct)
 [![Dependency status](https://img.shields.io/david/dominictarr/varstruct.svg?style=flat-square)](https://david-dm.org/dominictarr/varstruct#info=dependencies)
 
-[![testling badge](https://ci.testling.com/dominictarr/varstruct.png)](https://ci.testling.com/dominictarr/varstruct)
+[![abstract-encoding](https://img.shields.io/badge/abstract--encoding-compliant-brightgreen.svg?style=flat-square)](https://github.com/mafintosh/abstract-encoding)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
@@ -16,15 +16,15 @@ and variable (usually length delemited) structures.
 
 ## Example - a 3d vector
 
-``` js
+```js
 var vstruct = require('varstruct')
 
 //create a vector codec.
-var vector = vstruct({
-  x: vstruct.DoubleBE,
-  y: vstruct.DoubleBE,
-  z: vstruct.DoubleBE
-})
+var vector = vstruct([
+  { name: 'x', type: vstruct.DoubleBE },
+  { name: 'y', type: vstruct.DoubleBE },
+  { name: 'z', type: vstruct.DoubleBE }
+])
 
 //encode a object to get a buffer
 var buffer = vector.encode({
@@ -36,110 +36,76 @@ var v = vector.decode(buffer)
 
 ## Example - a message metadata + attachments
 
-``` js
+```js
 var vstruct = require('varstruct')
+var VarIntProtobuf = require('varint')
 
 //codec for a sha256 hash
-var sha256 = vstruct.buffer(32)
+var SHA256 = vstruct.Buffer(32)
 
-var message = vstruct({
-  //the hash of the previous message
-  previous: sha256,
+var message = vstruct([
+  // the hash of the previous message
+  { name: 'previous', type: SHA256 },
 
-  //the hash of the author's public key
-  author: sha256,
+  // the hash of the author's public key
+  { name: 'author', type: SHA256 },
 
-  //an arbitary length buffer
-  message: vstruct.varbuffer(vstruct.varint),
+  // an arbitary length buffer
+  { name: 'message', type: vstruct.VarBuffer(VarIntProtobuf) },
 
-  //hashes of related documents.
-  attachments:
-    vstruct.vararray(vstruct.byte, sha256)
-}
-
+  // hashes of related documents.
+  { name: 'attachments', type: vstruct.VarArray(vstruct.Byte, SHA256) }
+])
 ```
 
 ## API
 
-### abstract interface: codec.
+varstruct uses [abstract-encoding](http://github.com/mafintosh/abstract-encoding) as interface and provides next types:
+ * [Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int32, UInt64, Float, Double](#byte-int8-uint8-int16-uint16-int32-uint32-int32-uint64-float-double)
+ * [Array](#arraylengtharray-itemcodec) and [VarArray](#vararraylengthcodec-itemcodec)
+ * [Buffer](#bufferlength) and [VarBuffer](#varbufferlengthcodec)
+ * [VarString](#varstringlengthcodec-encoding)
+ * [Bound](#bounditemcodec-checkvalue)
 
-every thing in varstruct implements a `codec` interface,
-#### codec.encode(value, buffer?, offset?)
+### varstruct([{ name: string, type: codec }])
 
-Encode `value` as binary. If `buffer` is not provided,
-return a new buffer. If `buffer` is provided, write the encoding
-of `value` into `buffer` starting at `offset`.
-
-If `value` is the wrong type to be encoded, or there is not enough room
-left in `buffer` after `offset` then throw an error.
-
-After `encode` is called, a codec must set `encode.bytes` to be
-the number of bytes used to encode that value.
-
-#### codec.decode(buffer, offset=0)
-
-decode the `value` encoded in `buffer` starting at `offset`.
-`offset` defaults to `0` if not provided.
-Return the new decoded value.
-
-`decode` *must* throw an error if `buffer` is not long enough
-to contain a valid value after `offset`.
-
-After `decode` is called, a codec must set `decode.bytes` to be
-the number of bytes consumed.
-
-#### optional integer: codec.length
-
-if this codec always encodes the same length,
-set an integer property `length`
-If `length` is not provided, `codec.dynamicLength` *must* be.
-
-#### optional: codec.encodingLength(value)
-
-return the number of bytes it would take to encode `value`.
-If `encodingLength` is not provided, `codec.length` *must* be.
-
-### Int8, UInt16, UInt16, Int16, UInt32, Int32, UInt64, Int64, Float, Double
-
-number codecs, by default Big Endian.
-If you want Little Endian, append `LE`, for examlpe `Int16LE`
-Use of Big Endian is encouraged. You can also append `BE` to be
-more explicitly Big Endian.
-
-64 bit ints are actually only 53 bit ints, but they will still be
-written to 8 bytes. taken from [int53](https://github.com/dannycoates/int53)
-
-### bound(numberCodec, min, max)
-
-return a codec that errors if the value is not within a range.
-
-### varint
-
-variable sized integers, this is just reexporting
-[chrisdickinson/varint](https://github.com/chrisdickinson/varint)
-
-
-### varstruct({name: codec})
-
-create a codec with a fixed number of fields.
+Create a codec with a fixed number of fields.
 If any subcodec has a variable length, then the new codec will as well.
 
-### buffer(length)
+### Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int32, UInt64, Float, Double
 
-create a *fixed* length buffer codec.
+If you want Big Endian, append `BE`, for examlpe `Int16BE` or add `LE` for Little Endian.
 
-### varbuf(lengthCodec)
+64 bit ints are actually only 53 bit ints, but they will still be
+written to 8 bytes. (taken from [int53](https://github.com/dannycoates/int53))
 
-create a variable length buffer codec. This will first write out the length of the
-value buffer and then the value buffer itself. The `lengthCodec` may be
-variable length itself (i.e. a varint), but must encode an integer.
+### Array(lengthArray, itemCodec)
 
-### vararray(lengthCodec, itemCodec)
+Create codec that encodes an array with *fixed* length.
 
-create a variable length codec that encodes an array of items.
-`itemCodec` may be any varstruct compatible codec, including a vararray.
-As long as it can encode very element in the array.
+### VarArray(lengthCodec, itemCodec)
+
+Create a variable length codec that encodes an array of items. `itemCodec` may be any varstruct compatible codec, including a vararray.
+As long as it can encode very element in the array,
 `lengthCodec` must encode an integer.
+
+### Buffer(length)
+
+Create a *fixed* length buffer codec.
+
+### VarBuffer(lengthCodec)
+
+Create a variable length buffer codec. This will first write out the length of the
+value buffer and then the value buffer itself. The `lengthCodec` may be
+variable length itself, but must encode an integer.
+
+### VarString(lengthCodec, encoding)
+
+Create a variable length string codec. This codec uses `VarBuffer` (buffer will be created from string with given `encoding`).
+
+### Bound(itemCodec, checkValue)
+
+Return a codec that will check value before encode and after decode. `checkValue` should throw error if value is wrong.
 
 ## License
 

@@ -27,6 +27,6 @@
   "devDependencies": {
     "standard": "^6.0.7",
     "tap": "^5.7.0",
-    "varuint-bitcoin": "^1.0.0"
+    "varuint-bitcoin": "^1.0.1"
   }
 }
