@@ -14,9 +14,7 @@ tap.test('encode', function (t) {
 })
 
 tap.test('encode/decode', function (t) {
-  var buf = new Buffer(100)
   var encodings = [
-    'ascii',
     'utf8',
     'utf16le',
     'base64',
@@ -26,7 +24,7 @@ tap.test('encode/decode', function (t) {
 
   encodings.forEach(function (encoding) {
     t.test('encoding: ' + encoding, function (t) {
-      var s = buf.toString(encoding)
+      var s = new Buffer(1000).toString(encoding)
       var varstring = varstruct.VarString(varstruct.UInt32BE, encoding)
       t.same(varstring.decode(varstring.encode(s)), s)
       t.end()

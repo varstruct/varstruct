@@ -85,9 +85,7 @@ Create codec that encodes an array with *fixed* length.
 
 ### VarArray(lengthCodec, itemCodec)
 
-Create a variable length codec that encodes an array of items. `itemCodec` may be any varstruct compatible codec, including a vararray.
-As long as it can encode very element in the array,
-`lengthCodec` must encode an integer.
+Create a variable length codec that encodes an array of items. `itemCodec` may be any varstruct compatible codec, including a VarArray. As long as it can encode very element in the array, `lengthCodec` must encode an integer.
 
 ### Buffer(length)
 
@@ -95,9 +93,7 @@ Create a *fixed* length buffer codec.
 
 ### VarBuffer(lengthCodec)
 
-Create a variable length buffer codec. This will first write out the length of the
-value buffer and then the value buffer itself. The `lengthCodec` may be
-variable length itself, but must encode an integer.
+Create a variable length buffer codec. This will first write out the length of the value buffer and then the value buffer itself. The `lengthCodec` may be variable length itself, but must encode an integer.
 
 ### VarString(lengthCodec, encoding)
 

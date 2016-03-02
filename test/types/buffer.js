@@ -65,41 +65,6 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-/*
-t.test('decode', function (t) {
-  t.test('not data enough for decode', function (t) {
-    t.throws(function () {
-      buffer42.decode(new Buffer(9))
-    }, new Error('not enough data for decode'))
-    t.end()
-  })
-
-  t.test('offset is zero', function (t) {
-    var buf1 = new Buffer(42)
-    var buf2 = new Buffer(buf1)
-    var decoded = buffer42.decode(buf1)
-    t.same(buffer42.decode.bytes, 42)
-    t.same(decoded.toString('hex'), buf1.toString('hex'))
-    for (var i = 0; i < buf1.length; ++i) buf1[i] += 42
-    t.same(decoded.toString('hex'), buf2.toString('hex'))
-    t.end()
-  })
-
-  t.test('offset is not zero', function (t) {
-    var buf1 = new Buffer(43)
-    var buf2 = new Buffer(buf1.slice(1))
-    var decoded = buffer42.decode(buf1, 1)
-    t.same(buffer42.decode.bytes, 42)
-    t.same(decoded.toString('hex'), buf2.toString('hex'))
-    for (var i = 0; i < buf1.length; ++i) buf1[i] += 42
-    t.same(decoded.toString('hex'), buf2.toString('hex'))
-    t.end()
-  })
-
-  t.end()
-})
-*/
-
 tap.test('encodingLength', function (t) {
   t.test('should be length', function (t) {
     t.same(varstruct.Buffer(42).encodingLength(), 42)
