@@ -16,7 +16,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('length', function (t) {
+tap.test('encodingLength', function (t) {
   t.test('return valid number', function (t) {
     var struct = varstruct([length42, length42])
     t.same(typeof struct.encodingLength, 'function')

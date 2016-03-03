@@ -5,9 +5,7 @@ module.exports = function (types) {
   // copy items for freezing
   types = types.map(function (itemType) { return itemType })
 
-  function encodingLength (items) {
-    if (!Array.isArray(items)) throw new TypeError('value must be an Array instance')
-    if (items.length !== types.length) throw new RangeError('value.length is out of bounds')
+  function _length (items) {
     return reduce(types, function (total, itemType, index) {
       return total + itemType.encodingLength(items[index])
     }, 0)
@@ -17,7 +15,7 @@ module.exports = function (types) {
     encode: function encode (value, buffer, offset) {
       if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
       if (value.length !== types.length) throw new RangeError('value.length is out of bounds')
-      if (!buffer) buffer = new Buffer(encodingLength(value))
+      if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
       encode.bytes = reduce(types, function (loffset, itemType, index) {
         itemType.encode(value[index], buffer, loffset)
@@ -34,6 +32,10 @@ module.exports = function (types) {
       }, offset) - offset
       return items
     },
-    encodingLength: encodingLength
+    encodingLength: function (value) {
+      if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
+      if (value.length !== types.length) throw new RangeError('value.length is out of bounds')
+      return _length(value)
+    }
   }
 }

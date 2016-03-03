@@ -34,7 +34,7 @@ tap.test('encode/decode', function (t) {
   t.end()
 })
 
-tap.test('length', function (t) {
+tap.test('encodingLength', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
       varstruct.VarString(varstruct.UInt32BE).encodingLength(null)

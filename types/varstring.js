@@ -5,11 +5,6 @@ module.exports = function (lengthType, encoding) {
   var varbuffer = VarBuffer(lengthType)
   if (!encoding) encoding = 'utf8'
 
-  function encodingLength (value) {
-    if (typeof value !== 'string') throw new TypeError('value must be a string')
-    return varbuffer.encodingLength(new Buffer(value, encoding))
-  }
-
   return {
     encode: function encode (value, buffer, offset) {
       if (typeof value !== 'string') throw new TypeError('value must be a string')
@@ -22,6 +17,9 @@ module.exports = function (lengthType, encoding) {
       decode.bytes = varbuffer.decode.bytes
       return sbuffer.toString(encoding)
     },
-    encodingLength: encodingLength
+    encodingLength: function (value) {
+      if (typeof value !== 'string') throw new TypeError('value must be a string')
+      return varbuffer.encodingLength(new Buffer(value, encoding))
+    }
   }
 }

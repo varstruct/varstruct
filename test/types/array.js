@@ -74,7 +74,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('length', function (t) {
+tap.test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       array42.encodingLength(null)

@@ -2,8 +2,7 @@
 var reduce = require('../reduce')
 
 module.exports = function (lengthType, itemType) {
-  function encodingLength (items) {
-    if (!Array.isArray(items)) throw new TypeError('value must be an Array instance')
+  function _length (items) {
     return reduce(items, function (total, item) {
       return total + itemType.encodingLength(item)
     }, lengthType.encodingLength(items.length))
@@ -12,7 +11,7 @@ module.exports = function (lengthType, itemType) {
   return {
     encode: function encode (value, buffer, offset) {
       if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
-      if (!buffer) buffer = new Buffer(encodingLength(value))
+      if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
       lengthType.encode(value.length, buffer, offset)
       encode.bytes = reduce(value, function (loffset, item) {
@@ -30,6 +29,9 @@ module.exports = function (lengthType, itemType) {
       }, lengthType.decode.bytes + offset) - offset
       return items
     },
-    encodingLength: encodingLength
+    encodingLength: function (value) {
+      if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
+      return _length(value)
+    }
   }
 }

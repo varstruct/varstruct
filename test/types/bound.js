@@ -42,7 +42,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('length', function (t) {
+tap.test('encodingLength', function (t) {
   t.test('should be Number equal 2', function (t) {
     t.same(Int12BitsBE.encodingLength(124), 2)
     t.end()

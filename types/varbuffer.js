@@ -1,15 +1,14 @@
 'use strict'
 
 module.exports = function (lengthType) {
-  function encodingLength (value) {
-    if (!Buffer.isBuffer(value)) throw new TypeError('value must be a Buffer instance')
+  function _length (value) {
     return lengthType.encodingLength(value.length) + value.length
   }
 
   return {
     encode: function encode (value, buffer, offset) {
       if (!Buffer.isBuffer(value)) throw new TypeError('value must be a Buffer instance')
-      if (!buffer) buffer = new Buffer(encodingLength(value))
+      if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
       lengthType.encode(value.length, buffer, offset)
       offset += lengthType.encode.bytes
@@ -26,6 +25,9 @@ module.exports = function (lengthType) {
       decode.bytes = lengthType.decode.bytes + blength
       return new Buffer(buffer.slice(offset, offset + blength))
     },
-    encodingLength: encodingLength
+    encodingLength: function (value) {
+      if (!Buffer.isBuffer(value)) throw new TypeError('value must be a Buffer instance')
+      return _length(value)
+    }
   }
 }

@@ -2,9 +2,7 @@
 var reduce = require('../reduce')
 
 module.exports = function (length, itemType) {
-  function encodingLength (items) {
-    if (!Array.isArray(items)) throw new TypeError('value must be an Array instance')
-    if (items.length !== length) throw new RangeError('value.length is out of bounds')
+  function _length (items) {
     return reduce(items, function (total, item) {
       return total + itemType.encodingLength(item)
     }, 0)
@@ -14,7 +12,7 @@ module.exports = function (length, itemType) {
     encode: function encode (value, buffer, offset) {
       if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
       if (value.length !== length) throw new RangeError('value.length is out of bounds')
-      if (!buffer) buffer = new Buffer(encodingLength(value))
+      if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
       encode.bytes = reduce(value, function (loffset, item) {
         itemType.encode(item, buffer, loffset)
@@ -31,6 +29,10 @@ module.exports = function (length, itemType) {
       }, offset) - offset
       return items
     },
-    encodingLength: encodingLength
+    encodingLength: function (value) {
+      if (!Array.isArray(value)) throw new TypeError('value must be an Array instance')
+      if (value.length !== length) throw new RangeError('value.length is out of bounds')
+      return _length(value)
+    }
   }
 }
