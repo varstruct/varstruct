@@ -35,6 +35,66 @@ tap.test('length', function (t) {
   t.end()
 })
 
+tap.test('assert object properties', function (t) {
+  try {
+    varstruct([ { foo: 'bar' } ])
+    t.fail('error not thrown')
+  } catch (err) {
+    t.ok(err, 'error thrown')
+    t.equal(err.message, 'Item missing "name" property', 'correct error message')
+  }
+
+  try {
+    varstruct([ { name: 'foo' } ])
+    t.fail('error not thrown')
+  } catch (err) {
+    t.ok(err, 'error thrown')
+    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
+  }
+
+  try {
+    varstruct([ { name: 'foo', type: {} } ])
+    t.fail('error not thrown')
+  } catch (err) {
+    t.ok(err, 'error thrown')
+    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
+  }
+
+  try {
+    varstruct([ { name: 'foo', type: {
+      decode: function () {}
+    } } ])
+    t.fail('error not thrown')
+  } catch (err) {
+    t.ok(err, 'error thrown')
+    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
+  }
+
+  try {
+    varstruct([ { name: 'foo', type: {
+      decode: function () {},
+      encode: function () {}
+    } } ])
+    t.fail('error not thrown')
+  } catch (err) {
+    t.ok(err, 'error thrown')
+    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
+  }
+
+  try {
+    varstruct([ { name: 'foo', type: {
+      decode: function () {},
+      encode: function () {},
+      encodingLength: function () {}
+    } } ])
+    t.pass('error not thrown')
+  } catch (err) {
+    t.fail('error thrown')
+  }
+
+  t.end()
+})
+
 tap.test('bitcoin transactions', function (t) {
   var VarUIntBitcoin = require('varuint-bitcoin')
   var TxInput = varstruct([
