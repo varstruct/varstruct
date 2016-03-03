@@ -12,22 +12,22 @@ tap.test('encode', function (t) {
     t.end()
   })
 
-  var indexError = new RangeError('index out of range')
+  var expectedError = new RangeError('index out of range')
   if (process.version.split('.').slice(0, 2).join('') === 'v010') {
-    indexError = new RangeError('Trying to write outside buffer length')
+    expectedError = new RangeError('Trying to write outside buffer length')
   }
 
   t.test('index out of range #1', function (t) {
     t.throws(function () {
       vararray.encode(new Array(42), new Buffer(3))
-    }, indexError)
+    }, expectedError)
     t.end()
   })
 
   t.test('index out of range #2', function (t) {
     t.throws(function () {
       vararray.encode(new Array(42), undefined, 1765)
-    }, indexError)
+    }, expectedError)
     t.end()
   })
 

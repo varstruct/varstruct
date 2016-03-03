@@ -9,17 +9,6 @@ var length42 = {
 }
 
 tap.test('encode', function (t) {
-  t.test('Invalid typed array length', function (t) {
-    var struct = varstruct([{
-      name: 'Infinity',
-      type: { encode: noop, decode: noop, encodingLength: function () { return Infinity } }
-    }])
-    t.throws(function () {
-      struct.encode({})
-    }, new RangeError('Invalid typed array length'))
-    t.end()
-  })
-
   t.end()
 })
 

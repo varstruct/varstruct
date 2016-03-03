@@ -23,9 +23,10 @@ exports.FloatLE = numbers.FloatLE
 exports.DoubleBE = numbers.DoubleBE
 exports.DoubleLE = numbers.DoubleLE
 
-// array & vararray
+// array & vararray & sequence
 exports.Array = require('./types/array')
 exports.VarArray = require('./types/vararray')
+exports.Sequence = require('./types/sequence')
 
 // buffer & varbuffer
 exports.Buffer = require('./types/buffer')

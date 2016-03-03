@@ -60,7 +60,7 @@ var message = vstruct([
 
 varstruct uses [abstract-encoding](http://github.com/mafintosh/abstract-encoding) as interface and provides next types:
  * [Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int32, UInt64, Float, Double](#byte-int8-uint8-int16-uint16-int32-uint32-int32-uint64-float-double)
- * [Array](#arraylengtharray-itemcodec) and [VarArray](#vararraylengthcodec-itemcodec)
+ * [Array](#arraylengtharray-itemcodec), [VarArray](#vararraylengthcodec-itemcodec) and [Sequence](#sequence-itemtype-itemtype--itemtype-)
  * [Buffer](#bufferlength) and [VarBuffer](#varbufferlengthcodec)
  * [VarString](#varstringlengthcodec-encoding)
  * [Bound](#bounditemcodec-checkvalue)
@@ -83,6 +83,10 @@ Create codec that encodes an array with *fixed* length.
 ### VarArray(lengthCodec, itemCodec)
 
 Create a variable length codec that encodes an array of items. `itemCodec` may be any varstruct compatible codec, including a VarArray. As long as it can encode very element in the array, `lengthCodec` must encode an integer.
+
+### Sequence([ itemType, itemType, ..., itemType ])
+
+Create codec that encodes an array with *fixed* length and *various* types.
 
 ### Buffer(length)
 
