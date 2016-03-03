@@ -4,6 +4,15 @@ var reduce = require('../reduce')
 module.exports = function (items) {
   // copy items for freezing
   items = items.map(function (item) {
+    if (!item.name) {
+      throw new Error('Item missing "name" property')
+    }
+    if (!item.type ||
+    typeof item.type.decode !== 'function' ||
+    typeof item.type.encode !== 'function' ||
+    typeof item.type.encodingLength !== 'function') {
+      throw new Error('Item "' + item.name + '" has invalid codec')
+    }
     return { name: item.name, type: item.type }
   })
 
