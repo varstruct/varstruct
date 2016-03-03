@@ -1,5 +1,4 @@
 'use strict'
-var util = require('../util')
 
 module.exports = function (lengthType) {
   function encodingLength (value) {
@@ -10,7 +9,7 @@ module.exports = function (lengthType) {
   return {
     encode: function encode (value, buffer, offset) {
       if (!Buffer.isBuffer(value)) throw new TypeError('value must be a Buffer instance')
-      if (!buffer) buffer = util.newBuffer(encodingLength(value))
+      if (!buffer) buffer = new Buffer(encodingLength(value))
       if (!offset) offset = 0
       lengthType.encode(value.length, buffer, offset)
       offset += lengthType.encode.bytes

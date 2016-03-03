@@ -9,9 +9,11 @@
   "license": "MIT",
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "files": [
-    "lib"
+    "types",
+    "index.js",
+    "reduce.js"
   ],
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/dominictarr/varstruct.git"

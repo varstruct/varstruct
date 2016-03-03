@@ -10,9 +10,7 @@
 
 encode/decode variable binary structures.
 
-This module makes creating binary formats easy.
-It supports both fixed length structures (like classic c structs),
-and variable (usually length delemited) structures.
+This module makes creating binary formats easy. It supports both fixed length structures (like classic c structs), and variable (usually length delemited) structures.
 
 ## Example - a 3d vector
 
@@ -76,8 +74,7 @@ If any subcodec has a variable length, then the new codec will as well.
 
 If you want Big Endian, append `BE`, for examlpe `Int16BE` or add `LE` for Little Endian.
 
-64 bit ints are actually only 53 bit ints, but they will still be
-written to 8 bytes. (taken from [int53](https://github.com/dannycoates/int53))
+64 bit ints are actually only 53 bit ints, but they will still be written to 8 bytes. (based on [int53](https://github.com/dannycoates/int53))
 
 ### Array(lengthArray, itemCodec)
 

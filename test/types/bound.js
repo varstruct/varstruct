@@ -1,6 +1,6 @@
 'use strict'
 var tap = require('tap')
-var varstruct = require('../../lib')
+var varstruct = require('../../')
 
 function bits12 (value) {
   if (value > 4095 || value < -4096) throw new Error('Answer 42!')

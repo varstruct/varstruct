@@ -1,6 +1,6 @@
 'use strict'
 var tap = require('tap')
-var varstruct = require('../lib')
+var varstruct = require('../')
 
 function noop () {}
 var length42 = {
@@ -9,14 +9,14 @@ var length42 = {
 }
 
 tap.test('encode', function (t) {
-  t.test('buffer length should be in interval (0, 1073741823]', function (t) {
+  t.test('Invalid typed array length', function (t) {
     var struct = varstruct([{
       name: 'Infinity',
       type: { encode: noop, decode: noop, encodingLength: function () { return Infinity } }
     }])
     t.throws(function () {
       struct.encode({})
-    }, new RangeError('buffer length should be in interval (0, 1073741823]'))
+    }, new RangeError('Invalid typed array length'))
     t.end()
   })
 

@@ -1,6 +1,6 @@
 'use strict'
 var tap = require('tap')
-var varstruct = require('../../lib')
+var varstruct = require('../../')
 
 tap.test('encode', function (t) {
   t.test('value must be a string', function (t) {

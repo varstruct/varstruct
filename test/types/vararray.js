@@ -1,6 +1,6 @@
 'use strict'
 var tap = require('tap')
-var varstruct = require('../../lib')
+var varstruct = require('../../')
 
 var vararray = varstruct.VarArray(varstruct.UInt32BE, varstruct.Buffer(42))
 

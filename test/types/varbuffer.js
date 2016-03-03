@@ -1,6 +1,6 @@
 'use strict'
 var tap = require('tap')
-var varstruct = require('../../lib')
+var varstruct = require('../../')
 
 var varbuffer = varstruct.VarBuffer(varstruct.UInt32BE)
 
