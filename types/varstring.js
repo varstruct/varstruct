@@ -1,7 +1,10 @@
 'use strict'
 var VarBuffer = require('./varbuffer')
+var util = require('../util')
 
 module.exports = function (lengthType, encoding) {
+  if (!util.isAbstractCodec(lengthType)) throw new TypeError('lengthType is invalid codec')
+
   var varbuffer = VarBuffer(lengthType)
   if (!encoding) encoding = 'utf8'
 

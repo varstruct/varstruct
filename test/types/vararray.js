@@ -4,6 +4,24 @@ var varstruct = require('../../')
 
 var vararray = varstruct.VarArray(varstruct.UInt32BE, varstruct.Buffer(42))
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('lengthType is invalid codec', function (t) {
+    t.throws(function () {
+      varstruct.VarArray(null)
+    }, new TypeError('lengthType is invalid codec'))
+    t.end()
+  })
+
+  t.test('itemType is invalid codec', function (t) {
+    t.throws(function () {
+      varstruct.VarArray(varstruct.UInt32BE)
+    }, new TypeError('itemType is invalid codec'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {

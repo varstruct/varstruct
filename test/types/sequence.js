@@ -9,6 +9,24 @@ var seq = varstruct.Sequence([
   varstruct.UInt8
 ])
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('expected types as Array', function (t) {
+    t.throws(function () {
+      varstruct.Sequence(null)
+    }, new TypeError('types must be an Array instance'))
+    t.end()
+  })
+
+  t.test('type is null', function (t) {
+    t.throws(function () {
+      varstruct.Sequence([null])
+    }, new TypeError('types Array has invalid codec'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {

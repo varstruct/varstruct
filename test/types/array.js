@@ -4,6 +4,24 @@ var varstruct = require('../../')
 
 var array42 = varstruct.Array(42, varstruct.Buffer(42))
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('length must be a number', function (t) {
+    t.throws(function () {
+      varstruct.Array(null)
+    }, new TypeError('length must be a number'))
+    t.end()
+  })
+
+  t.test('itemType is invalid codec', function (t) {
+    t.throws(function () {
+      varstruct.Array(1)
+    }, new TypeError('itemType is invalid codec'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {

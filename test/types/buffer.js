@@ -4,6 +4,17 @@ var varstruct = require('../../')
 
 var buffer42 = varstruct.Buffer(42)
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('length must be a number', function (t) {
+    t.throws(function () {
+      varstruct.Buffer()
+    }, new TypeError('length must be a number'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('value must be a Buffer instance', function (t) {
     t.throws(function () {

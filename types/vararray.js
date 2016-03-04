@@ -1,9 +1,12 @@
 'use strict'
-var reduce = require('../reduce')
+var util = require('../util')
 
 module.exports = function (lengthType, itemType) {
+  if (!util.isAbstractCodec(lengthType)) throw new TypeError('lengthType is invalid codec')
+  if (!util.isAbstractCodec(itemType)) throw new TypeError('itemType is invalid codec')
+
   function _length (items) {
-    return reduce(items, function (total, item) {
+    return util.reduce(items, function (total, item) {
       return total + itemType.encodingLength(item)
     }, lengthType.encodingLength(items.length))
   }
@@ -14,7 +17,7 @@ module.exports = function (lengthType, itemType) {
       if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
       lengthType.encode(value.length, buffer, offset)
-      encode.bytes = reduce(value, function (loffset, item) {
+      encode.bytes = util.reduce(value, function (loffset, item) {
         itemType.encode(item, buffer, loffset)
         return loffset + itemType.encode.bytes
       }, lengthType.encode.bytes + offset) - offset
@@ -23,7 +26,7 @@ module.exports = function (lengthType, itemType) {
     decode: function decode (buffer, offset) {
       if (!offset) offset = 0
       var items = new Array(lengthType.decode(buffer, offset))
-      decode.bytes = reduce(items, function (loffset, item, index) {
+      decode.bytes = util.reduce(items, function (loffset, item, index) {
         items[index] = itemType.decode(buffer, loffset)
         return loffset + itemType.decode.bytes
       }, lengthType.decode.bytes + offset) - offset

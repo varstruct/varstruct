@@ -1,6 +1,10 @@
 'use strict'
+var util = require('../util')
 
 module.exports = function (itemType, checkValue) {
+  if (!util.isAbstractCodec(itemType)) throw new TypeError('itemType is invalid codec')
+  if (typeof checkValue !== 'function') throw new TypeError('checkValue must be a function')
+
   return {
     encode: function encode (value, buffer, offset) {
       checkValue(value)

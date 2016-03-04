@@ -8,6 +8,24 @@ function bits12 (value) {
 
 var Int12BitsBE = varstruct.Bound(varstruct.Int16BE, bits12)
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('itemType is invalid codec', function (t) {
+    t.throws(function () {
+      varstruct.Bound(1)
+    }, new TypeError('itemType is invalid codec'))
+    t.end()
+  })
+
+  t.test('checkValue must be a function', function (t) {
+    t.throws(function () {
+      varstruct.Bound(varstruct.Byte)
+    }, new TypeError('checkValue must be a function'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('encode 42', function (t) {
     t.same(Int12BitsBE.encode(42).toString('hex'), '002a')

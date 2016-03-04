@@ -8,7 +8,76 @@ var length42 = {
   type: { encode: noop, decode: noop, encodingLength: function () { return 42 } }
 }
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('expected items as Array', function (t) {
+    t.throws(function () {
+      varstruct(null)
+    }, new TypeError('items must be an Array instance'))
+    t.end()
+  })
+
+  t.test('missing "name" property', function (t) {
+    t.throws(function () {
+      varstruct([{ foo: 'bar' }])
+    }, new TypeError('item missing "name" property'))
+    t.end()
+  })
+
+  t.test('type is null', function (t) {
+    t.throws(function () {
+      varstruct([{ name: 'foo', type: null }])
+    }, new TypeError('item "foo" has invalid codec'))
+    t.end()
+  })
+
+  t.test('type encode should be function', function (t) {
+    t.throws(function () {
+      varstruct([{
+        name: 'foo',
+        type: { encode: null, decode: noop, encodingLength: noop }
+      }])
+    }, new TypeError('item "foo" has invalid codec'))
+    t.end()
+  })
+
+  t.test('type decode should be function', function (t) {
+    t.throws(function () {
+      varstruct([{
+        name: 'foo',
+        type: { encode: noop, decode: null, encodingLength: noop }
+      }])
+    }, new TypeError('item "foo" has invalid codec'))
+    t.end()
+  })
+
+  t.test('type encodingLength should be function', function (t) {
+    t.throws(function () {
+      varstruct([{
+        name: 'foo',
+        type: { encode: noop, decode: noop, encodingLength: null }
+      }])
+    }, new TypeError('item "foo" has invalid codec'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
+  t.test('expected object', function (t) {
+    t.throws(function () {
+      varstruct([length42]).encode()
+    }, new TypeError('expected value as object, got undefined'))
+    t.end()
+  })
+
+  t.test('expected object, not null', function (t) {
+    t.throws(function () {
+      varstruct([length42]).encode(null)
+    }, new TypeError('expected value as object, got null'))
+    t.end()
+  })
+
   t.end()
 })
 
@@ -31,66 +100,6 @@ tap.test('encodingLength', function (t) {
     t.same(struct.encodingLength({}), 84)
     t.end()
   })
-
-  t.end()
-})
-
-tap.test('assert object properties', function (t) {
-  try {
-    varstruct([ { foo: 'bar' } ])
-    t.fail('error not thrown')
-  } catch (err) {
-    t.ok(err, 'error thrown')
-    t.equal(err.message, 'Item missing "name" property', 'correct error message')
-  }
-
-  try {
-    varstruct([ { name: 'foo' } ])
-    t.fail('error not thrown')
-  } catch (err) {
-    t.ok(err, 'error thrown')
-    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
-  }
-
-  try {
-    varstruct([ { name: 'foo', type: {} } ])
-    t.fail('error not thrown')
-  } catch (err) {
-    t.ok(err, 'error thrown')
-    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
-  }
-
-  try {
-    varstruct([ { name: 'foo', type: {
-      decode: function () {}
-    } } ])
-    t.fail('error not thrown')
-  } catch (err) {
-    t.ok(err, 'error thrown')
-    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
-  }
-
-  try {
-    varstruct([ { name: 'foo', type: {
-      decode: function () {},
-      encode: function () {}
-    } } ])
-    t.fail('error not thrown')
-  } catch (err) {
-    t.ok(err, 'error thrown')
-    t.equal(err.message, 'Item "foo" has invalid codec', 'correct error message')
-  }
-
-  try {
-    varstruct([ { name: 'foo', type: {
-      decode: function () {},
-      encode: function () {},
-      encodingLength: function () {}
-    } } ])
-    t.pass('error not thrown')
-  } catch (err) {
-    t.fail('error thrown')
-  }
 
   t.end()
 })

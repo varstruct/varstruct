@@ -11,7 +11,7 @@
   "files": [
     "types",
     "index.js",
-    "reduce.js"
+    "util.js"
   ],
   "main": "./index.js",
   "repository": {

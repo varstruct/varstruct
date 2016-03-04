@@ -1,9 +1,12 @@
 'use strict'
-var reduce = require('../reduce')
+var util = require('../util')
 
 module.exports = function (length, itemType) {
+  if (typeof length !== 'number') throw new TypeError('length must be a number')
+  if (!util.isAbstractCodec(itemType)) throw new TypeError('itemType is invalid codec')
+
   function _length (items) {
-    return reduce(items, function (total, item) {
+    return util.reduce(items, function (total, item) {
       return total + itemType.encodingLength(item)
     }, 0)
   }
@@ -14,7 +17,7 @@ module.exports = function (length, itemType) {
       if (value.length !== length) throw new RangeError('value.length is out of bounds')
       if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
-      encode.bytes = reduce(value, function (loffset, item) {
+      encode.bytes = util.reduce(value, function (loffset, item) {
         itemType.encode(item, buffer, loffset)
         return loffset + itemType.encode.bytes
       }, offset) - offset
@@ -23,7 +26,7 @@ module.exports = function (length, itemType) {
     decode: function decode (buffer, offset) {
       if (!offset) offset = 0
       var items = new Array(length)
-      decode.bytes = reduce(items, function (loffset, item, index) {
+      decode.bytes = util.reduce(items, function (loffset, item, index) {
         items[index] = itemType.decode(buffer, loffset)
         return loffset + itemType.decode.bytes
       }, offset) - offset

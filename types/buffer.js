@@ -1,6 +1,8 @@
 'use strict'
 
 module.exports = function (length) {
+  if (typeof length !== 'number') throw new TypeError('length must be a number')
+
   function encode (value, buffer, offset) {
     if (!Buffer.isBuffer(value)) throw new TypeError('value must be a Buffer instance')
     if (value.length !== length) throw new RangeError('value.length is out of bounds')

@@ -1,12 +1,17 @@
 'use strict'
-var reduce = require('../reduce')
+var util = require('../util')
 
 module.exports = function (types) {
+  if (!Array.isArray(types)) throw new TypeError('types must be an Array instance')
+
   // copy items for freezing
-  types = types.map(function (itemType) { return itemType })
+  types = types.map(function (itemType) {
+    if (!util.isAbstractCodec(itemType)) throw new TypeError('types Array has invalid codec')
+    return itemType
+  })
 
   function _length (items) {
-    return reduce(types, function (total, itemType, index) {
+    return util.reduce(types, function (total, itemType, index) {
       return total + itemType.encodingLength(items[index])
     }, 0)
   }
@@ -17,7 +22,7 @@ module.exports = function (types) {
       if (value.length !== types.length) throw new RangeError('value.length is out of bounds')
       if (!buffer) buffer = new Buffer(_length(value))
       if (!offset) offset = 0
-      encode.bytes = reduce(types, function (loffset, itemType, index) {
+      encode.bytes = util.reduce(types, function (loffset, itemType, index) {
         itemType.encode(value[index], buffer, loffset)
         return loffset + itemType.encode.bytes
       }, offset) - offset
@@ -26,7 +31,7 @@ module.exports = function (types) {
     decode: function decode (buffer, offset) {
       if (!offset) offset = 0
       var items = new Array(types.length)
-      decode.bytes = reduce(types, function (loffset, itemType, index) {
+      decode.bytes = util.reduce(types, function (loffset, itemType, index) {
         items[index] = itemType.decode(buffer, loffset)
         return loffset + itemType.decode.bytes
       }, offset) - offset

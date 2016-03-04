@@ -1,6 +1,9 @@
 'use strict'
+var util = require('../util')
 
 module.exports = function (lengthType) {
+  if (!util.isAbstractCodec(lengthType)) throw new TypeError('lengthType is invalid codec')
+
   function _length (value) {
     return lengthType.encodingLength(value.length) + value.length
   }

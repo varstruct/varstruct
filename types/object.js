@@ -1,33 +1,29 @@
 'use strict'
-var reduce = require('../reduce')
+var util = require('../util')
 
 module.exports = function (items) {
+  if (!Array.isArray(items)) throw new TypeError('items must be an Array instance')
+
   // copy items for freezing
   items = items.map(function (item) {
-    if (!item.name) {
-      throw new Error('Item missing "name" property')
-    }
-    if (!item.type ||
-    typeof item.type.decode !== 'function' ||
-    typeof item.type.encode !== 'function' ||
-    typeof item.type.encodingLength !== 'function') {
-      throw new Error('Item "' + item.name + '" has invalid codec')
-    }
+    if (!item || typeof item.name !== 'string') throw new TypeError('item missing "name" property')
+    if (!util.isAbstractCodec(item.type)) throw new TypeError('item "' + item.name + '" has invalid codec')
     return { name: item.name, type: item.type }
   })
 
   function encodingLength (obj) {
-    return reduce(items, function (total, item) {
+    return util.reduce(items, function (total, item) {
       return total + item.type.encodingLength(obj[item.name])
     }, 0)
   }
 
   return {
-    encode: function encode (obj, buffer, offset) {
-      if (!buffer) buffer = new Buffer(encodingLength(obj))
+    encode: function encode (value, buffer, offset) {
+      if (typeof value !== 'object' || value === null) throw new TypeError('expected value as object, got ' + value)
+      if (!buffer) buffer = new Buffer(encodingLength(value))
       if (!offset) offset = 0
-      encode.bytes = reduce(items, function (loffset, item) {
-        item.type.encode(obj[item.name], buffer, loffset)
+      encode.bytes = util.reduce(items, function (loffset, item) {
+        item.type.encode(value[item.name], buffer, loffset)
         return loffset + item.type.encode.bytes
       }, offset) - offset
       return buffer
@@ -35,7 +31,7 @@ module.exports = function (items) {
     decode: function decode (buffer, offset) {
       if (!offset) offset = 0
       var obj = {}
-      decode.bytes = reduce(items, function (loffset, item) {
+      decode.bytes = util.reduce(items, function (loffset, item) {
         obj[item.name] = item.type.decode(buffer, loffset)
         return loffset + item.type.decode.bytes
       }, offset) - offset

@@ -2,6 +2,17 @@
 var tap = require('tap')
 var varstruct = require('../../')
 
+tap.test('asserts on codec creation', function (t) {
+  t.test('lengthType is invalid codec', function (t) {
+    t.throws(function () {
+      varstruct.VarString(null)
+    }, new TypeError('lengthType is invalid codec'))
+    t.end()
+  })
+
+  t.end()
+})
+
 tap.test('encode', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
