@@ -28,11 +28,11 @@ module.exports = function (types) {
       }, offset) - offset
       return buffer
     },
-    decode: function decode (buffer, offset) {
+    decode: function decode (buffer, offset, end) {
       if (!offset) offset = 0
       var items = new Array(types.length)
       decode.bytes = util.reduce(types, function (loffset, itemType, index) {
-        items[index] = itemType.decode(buffer, loffset)
+        items[index] = itemType.decode(buffer, loffset, end)
         return loffset + itemType.decode.bytes
       }, offset) - offset
       return items

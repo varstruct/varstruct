@@ -12,9 +12,10 @@ function createNumber (type, length) {
     return buffer
   }
 
-  function decode (buffer, offset) {
+  function decode (buffer, offset, end) {
     if (!offset) offset = 0
-    return read.call(buffer, offset)
+    if (!end) return read.call(buffer, offset)
+    return read.call(buffer.slice(offset, end), 0)
   }
 
   encode.bytes = decode.bytes = length
@@ -29,9 +30,10 @@ function createNumber64 (read, write) {
     return buffer
   }
 
-  function decode (buffer, offset) {
+  function decode (buffer, offset, end) {
     if (!offset) offset = 0
-    return read(buffer, offset)
+    if (!end) return read(buffer, offset)
+    return read(buffer.slice(offset, read), 0)
   }
 
   encode.bytes = decode.bytes = 8

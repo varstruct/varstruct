@@ -12,8 +12,8 @@ module.exports = function (itemType, checkValue) {
       encode.bytes = itemType.encode.bytes
       return buffer
     },
-    decode: function decode (buffer, offset) {
-      var value = itemType.decode(buffer, offset)
+    decode: function decode (buffer, offset, end) {
+      var value = itemType.decode(buffer, offset, end)
       checkValue(value)
       decode.bytes = itemType.decode.bytes
       return value

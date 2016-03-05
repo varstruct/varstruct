@@ -23,11 +23,11 @@ module.exports = function (lengthType, itemType) {
       }, lengthType.encode.bytes + offset) - offset
       return buffer
     },
-    decode: function decode (buffer, offset) {
+    decode: function decode (buffer, offset, end) {
       if (!offset) offset = 0
-      var items = new Array(lengthType.decode(buffer, offset))
+      var items = new Array(lengthType.decode(buffer, offset, end))
       decode.bytes = util.reduce(items, function (loffset, item, index) {
-        items[index] = itemType.decode(buffer, loffset)
+        items[index] = itemType.decode(buffer, loffset, end)
         return loffset + itemType.decode.bytes
       }, lengthType.decode.bytes + offset) - offset
       return items

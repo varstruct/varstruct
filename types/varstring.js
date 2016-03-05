@@ -15,8 +15,8 @@ module.exports = function (lengthType, encoding) {
       encode.bytes = varbuffer.encode.bytes
       return buffer
     },
-    decode: function decode (buffer, offset) {
-      var sbuffer = varbuffer.decode(buffer, offset)
+    decode: function decode (buffer, offset, end) {
+      var sbuffer = varbuffer.decode(buffer, offset, end)
       decode.bytes = varbuffer.decode.bytes
       return sbuffer.toString(encoding)
     },

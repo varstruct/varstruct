@@ -13,9 +13,10 @@ module.exports = function (length) {
     return buffer
   }
 
-  function decode (buffer, offset) {
+  function decode (buffer, offset, end) {
     if (!offset) offset = 0
-    if (offset + length > buffer.length) throw new RangeError('not enough data for decode')
+    if (!end) end = buffer.length
+    if (offset + length > end) throw new RangeError('not enough data for decode')
     return new Buffer(buffer.slice(offset, offset + length))
   }
 

@@ -20,11 +20,12 @@ module.exports = function (lengthType) {
       encode.bytes = lengthType.encode.bytes + value.length
       return buffer
     },
-    decode: function decode (buffer, offset) {
+    decode: function decode (buffer, offset, end) {
       if (!offset) offset = 0
-      var blength = lengthType.decode(buffer, offset)
+      if (!end) end = buffer.length
+      var blength = lengthType.decode(buffer, offset, end)
       offset += lengthType.decode.bytes
-      if (offset + blength > buffer.length) throw new RangeError('not enough data for decode')
+      if (offset + blength > end) throw new RangeError('not enough data for decode')
       decode.bytes = lengthType.decode.bytes + blength
       return new Buffer(buffer.slice(offset, offset + blength))
     },
