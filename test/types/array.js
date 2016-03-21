@@ -8,14 +8,14 @@ test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {
     t.throws(function () {
       varstruct.Array(null)
-    }, new TypeError('length must be a number'))
+    }, /^TypeError: length must be a number$/)
     t.end()
   })
 
   t.test('itemType is invalid codec', function (t) {
     t.throws(function () {
       varstruct.Array(1)
-    }, new TypeError('itemType is invalid codec'))
+    }, /^TypeError: itemType is invalid codec$/)
     t.end()
   })
 
@@ -26,28 +26,28 @@ test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       array42.encode(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 
   t.test('value.length is out of bounds', function (t) {
     t.throws(function () {
       array42.encode(new Array(41))
-    }, new RangeError('value.length is out of bounds'))
+    }, /^RangeError: value.length is out of bounds$/)
     t.end()
   })
 
   t.test('value must be a Buffer instance #1', function (t) {
     t.throws(function () {
       array42.encode(new Array(42), new Buffer(3))
-    }, new TypeError('value must be a Buffer instance'))
+    }, /^TypeError: value must be a Buffer instance$/)
     t.end()
   })
 
   t.test('value must be a Buffer instance #2', function (t) {
     t.throws(function () {
       array42.encode(new Array(42), undefined, 1765)
-    }, new TypeError('value must be a Buffer instance'))
+    }, /^TypeError: value must be a Buffer instance$/)
     t.end()
   })
 
@@ -67,14 +67,14 @@ test('decode', function (t) {
   t.test('not enough data for decode #1', function (t) {
     t.throws(function () {
       array42.decode(new Buffer(1763))
-    }, new RangeError('not enough data for decode'))
+    }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
   t.test('not enough data for decode #2', function (t) {
     t.throws(function () {
       array42.decode(new Buffer(1764), 1)
-    }, new RangeError('not enough data for decode'))
+    }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
@@ -96,7 +96,7 @@ test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       array42.encodingLength(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 

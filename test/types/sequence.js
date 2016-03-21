@@ -13,14 +13,14 @@ test('asserts on codec creation', function (t) {
   t.test('expected types as Array', function (t) {
     t.throws(function () {
       varstruct.Sequence(null)
-    }, new TypeError('types must be an Array instance'))
+    }, /^TypeError: types must be an Array instance$/)
     t.end()
   })
 
   t.test('type is null', function (t) {
     t.throws(function () {
       varstruct.Sequence([null])
-    }, new TypeError('types Array has invalid codec'))
+    }, /^TypeError: types Array has invalid codec$/)
     t.end()
   })
 
@@ -31,14 +31,14 @@ test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       seq.encode(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 
   t.test('value.length is out of bounds', function (t) {
     t.throws(function () {
       seq.encode(new Array(42))
-    }, new RangeError('value.length is out of bounds'))
+    }, /^RangeError: value.length is out of bounds$/)
     t.end()
   })
 
@@ -68,14 +68,14 @@ test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       seq.encodingLength(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 
   t.test('value.length is out of bounds', function (t) {
     t.throws(function () {
       seq.encodingLength(new Array(42))
-    }, new RangeError('value.length is out of bounds'))
+    }, /^RangeError: value.length is out of bounds$/)
     t.end()
   })
 

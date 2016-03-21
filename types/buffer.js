@@ -1,5 +1,4 @@
 'use strict'
-
 module.exports = function (length) {
   if (typeof length !== 'number') throw new TypeError('length must be a number')
 
@@ -9,7 +8,7 @@ module.exports = function (length) {
     if (!buffer) return new Buffer(value)
     if (!offset) offset = 0
     if (offset + length > buffer.length) throw new RangeError('destination buffer is too small')
-    value.copy(buffer, offset, 0, length)
+    value.copy(buffer, offset)
     return buffer
   }
 

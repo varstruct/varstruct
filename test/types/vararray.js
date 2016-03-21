@@ -8,14 +8,14 @@ test('asserts on codec creation', function (t) {
   t.test('lengthType is invalid codec', function (t) {
     t.throws(function () {
       varstruct.VarArray(null)
-    }, new TypeError('lengthType is invalid codec'))
+    }, /^TypeError: lengthType is invalid codec$/)
     t.end()
   })
 
   t.test('itemType is invalid codec', function (t) {
     t.throws(function () {
       varstruct.VarArray(varstruct.UInt32BE)
-    }, new TypeError('itemType is invalid codec'))
+    }, /^TypeError: itemType is invalid codec$/)
     t.end()
   })
 
@@ -26,7 +26,7 @@ test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       vararray.encode(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 
@@ -69,14 +69,14 @@ test('decode', function (t) {
   t.test('not enough data for decode #1', function (t) {
     t.throws(function () {
       vararray.decode(buf.slice(1))
-    }, new RangeError('not enough data for decode'))
+    }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
   t.test('not enough data for decode #2', function (t) {
     t.throws(function () {
       vararray.decode(buf, 1)
-    }, new RangeError('not enough data for decode'))
+    }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
@@ -97,7 +97,7 @@ test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       vararray.encodingLength(null)
-    }, new TypeError('value must be an Array instance'))
+    }, /^TypeError: value must be an Array instance$/)
     t.end()
   })
 

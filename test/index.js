@@ -12,21 +12,21 @@ test('asserts on codec creation', function (t) {
   t.test('expected items as Array', function (t) {
     t.throws(function () {
       varstruct(null)
-    }, new TypeError('items must be an Array instance'))
+    }, /^TypeError: items must be an Array instance$/)
     t.end()
   })
 
   t.test('missing "name" property', function (t) {
     t.throws(function () {
       varstruct([{ foo: 'bar' }])
-    }, new TypeError('item missing "name" property'))
+    }, /^TypeError: item missing "name" property/)
     t.end()
   })
 
   t.test('type is null', function (t) {
     t.throws(function () {
       varstruct([{ name: 'foo', type: null }])
-    }, new TypeError('item "foo" has invalid codec'))
+    }, /^TypeError: item "foo" has invalid codec/)
     t.end()
   })
 
@@ -36,7 +36,7 @@ test('asserts on codec creation', function (t) {
         name: 'foo',
         type: { encode: null, decode: noop, encodingLength: noop }
       }])
-    }, new TypeError('item "foo" has invalid codec'))
+    }, /^TypeError: item "foo" has invalid codec/)
     t.end()
   })
 
@@ -46,7 +46,7 @@ test('asserts on codec creation', function (t) {
         name: 'foo',
         type: { encode: noop, decode: null, encodingLength: noop }
       }])
-    }, new TypeError('item "foo" has invalid codec'))
+    }, /^TypeError: item "foo" has invalid codec/)
     t.end()
   })
 
@@ -56,7 +56,7 @@ test('asserts on codec creation', function (t) {
         name: 'foo',
         type: { encode: noop, decode: noop, encodingLength: null }
       }])
-    }, new TypeError('item "foo" has invalid codec'))
+    }, /^TypeError: item "foo" has invalid codec/)
     t.end()
   })
 
@@ -67,14 +67,14 @@ test('encode', function (t) {
   t.test('expected object', function (t) {
     t.throws(function () {
       varstruct([length42]).encode()
-    }, new TypeError('expected value as object, got undefined'))
+    }, /^TypeError: expected value as object, got undefined/)
     t.end()
   })
 
   t.test('expected object, not null', function (t) {
     t.throws(function () {
       varstruct([length42]).encode(null)
-    }, new TypeError('expected value as object, got null'))
+    }, /^TypeError: expected value as object, got null/)
     t.end()
   })
 

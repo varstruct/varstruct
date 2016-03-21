@@ -8,7 +8,7 @@ test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {
     t.throws(function () {
       varstruct.Buffer()
-    }, new TypeError('length must be a number'))
+    }, /^TypeError: length must be a number$/)
     t.end()
   })
 
@@ -19,14 +19,14 @@ test('encode', function (t) {
   t.test('value must be a Buffer instance', function (t) {
     t.throws(function () {
       buffer42.encode(new Array(42))
-    }, new TypeError('value must be a Buffer instance'))
+    }, /^TypeError: value must be a Buffer instance$/)
     t.end()
   })
 
   t.test('value.length is out of bounds', function (t) {
     t.throws(function () {
       buffer42.encode(new Buffer(41))
-    }, new RangeError('value.length is out of bounds'))
+    }, /^RangeError: value.length is out of bounds$/)
     t.end()
   })
 
@@ -41,7 +41,7 @@ test('encode', function (t) {
   t.test('destination buffer is too small', function (t) {
     t.throws(function () {
       buffer42.encode(new Buffer(42), new Buffer(42), 1)
-    }, new RangeError('destination buffer is too small'))
+    }, /^RangeError: destination buffer is too small$/)
     t.end()
   })
 
@@ -61,7 +61,7 @@ test('decode', function (t) {
   t.test('not enough data for decode', function (t) {
     t.throws(function () {
       buffer42.decode(new Buffer(42), 1)
-    }, new RangeError('not enough data for decode'))
+    }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
