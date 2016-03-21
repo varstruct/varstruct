@@ -19,16 +19,18 @@
     "url": "https://github.com/dominictarr/varstruct.git"
   },
   "scripts": {
+    "coverage": "nyc npm run unit",
     "lint": "standard",
     "test": "npm run lint && npm run unit",
-    "unit": "tap --cov test/*.js test/**/*.js"
+    "unit": "tape test/*.js test/**/*.js"
   },
   "dependencies": {
     "int53": "^0.2.4"
   },
   "devDependencies": {
+    "nyc": "^6.1.1",
     "standard": "^6.0.7",
-    "tap": "^5.7.0",
+    "tape": "^4.5.1",
     "varuint-bitcoin": "^1.0.1"
   }
 }

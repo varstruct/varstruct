@@ -1,5 +1,5 @@
 'use strict'
-var tap = require('tap')
+var test = require('tape').test
 var varstruct = require('../../')
 
 var seq = varstruct.Sequence([
@@ -9,7 +9,7 @@ var seq = varstruct.Sequence([
   varstruct.UInt8
 ])
 
-tap.test('asserts on codec creation', function (t) {
+test('asserts on codec creation', function (t) {
   t.test('expected types as Array', function (t) {
     t.throws(function () {
       varstruct.Sequence(null)
@@ -27,7 +27,7 @@ tap.test('asserts on codec creation', function (t) {
   t.end()
 })
 
-tap.test('encode', function (t) {
+test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       seq.encode(null)
@@ -53,7 +53,7 @@ tap.test('encode', function (t) {
   t.end()
 })
 
-tap.test('decode', function (t) {
+test('decode', function (t) {
   t.test('read buffers', function (t) {
     var buf = new Buffer('000000000000000102000000000304', 'hex')
     t.same(seq.decode(buf), [1, 2, 3, 4])
@@ -64,7 +64,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('encodingLength', function (t) {
+test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       seq.encodingLength(null)

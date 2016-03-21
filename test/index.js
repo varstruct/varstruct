@@ -1,5 +1,5 @@
 'use strict'
-var tap = require('tap')
+var test = require('tape').test
 var varstruct = require('../')
 
 function noop () {}
@@ -8,7 +8,7 @@ var length42 = {
   type: { encode: noop, decode: noop, encodingLength: function () { return 42 } }
 }
 
-tap.test('asserts on codec creation', function (t) {
+test('asserts on codec creation', function (t) {
   t.test('expected items as Array', function (t) {
     t.throws(function () {
       varstruct(null)
@@ -63,7 +63,7 @@ tap.test('asserts on codec creation', function (t) {
   t.end()
 })
 
-tap.test('encode', function (t) {
+test('encode', function (t) {
   t.test('expected object', function (t) {
     t.throws(function () {
       varstruct([length42]).encode()
@@ -81,11 +81,11 @@ tap.test('encode', function (t) {
   t.end()
 })
 
-tap.test('decode', function (t) {
+test('decode', function (t) {
   t.end()
 })
 
-tap.test('encodingLength', function (t) {
+test('encodingLength', function (t) {
   t.test('return valid number', function (t) {
     var struct = varstruct([length42, length42])
     t.same(typeof struct.encodingLength, 'function')
@@ -104,7 +104,7 @@ tap.test('encodingLength', function (t) {
   t.end()
 })
 
-tap.test('bitcoin transactions', function (t) {
+test('bitcoin transactions', function (t) {
   var VarUIntBitcoin = require('varuint-bitcoin')
   var TxInput = varstruct([
     { name: 'hash', type: varstruct.Buffer(32) },

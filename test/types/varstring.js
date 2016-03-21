@@ -1,8 +1,8 @@
 'use strict'
-var tap = require('tap')
+var test = require('tape').test
 var varstruct = require('../../')
 
-tap.test('asserts on codec creation', function (t) {
+test('asserts on codec creation', function (t) {
   t.test('lengthType is invalid codec', function (t) {
     t.throws(function () {
       varstruct.VarString(null)
@@ -13,7 +13,7 @@ tap.test('asserts on codec creation', function (t) {
   t.end()
 })
 
-tap.test('encode', function (t) {
+test('encode', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
       varstruct.VarString(varstruct.UInt32BE).encode(null)
@@ -24,7 +24,7 @@ tap.test('encode', function (t) {
   t.end()
 })
 
-tap.test('encode/decode', function (t) {
+test('encode/decode', function (t) {
   var encodings = [
     'utf8',
     'utf16le',
@@ -45,7 +45,7 @@ tap.test('encode/decode', function (t) {
   t.end()
 })
 
-tap.test('encodingLength', function (t) {
+test('encodingLength', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
       varstruct.VarString(varstruct.UInt32BE).encodingLength(null)

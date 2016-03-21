@@ -1,10 +1,10 @@
 'use strict'
-var tap = require('tap')
+var test = require('tape').test
 var varstruct = require('../../')
 
 var vararray = varstruct.VarArray(varstruct.UInt32BE, varstruct.Buffer(42))
 
-tap.test('asserts on codec creation', function (t) {
+test('asserts on codec creation', function (t) {
   t.test('lengthType is invalid codec', function (t) {
     t.throws(function () {
       varstruct.VarArray(null)
@@ -22,7 +22,7 @@ tap.test('asserts on codec creation', function (t) {
   t.end()
 })
 
-tap.test('encode', function (t) {
+test('encode', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       vararray.encode(null)
@@ -62,7 +62,7 @@ tap.test('encode', function (t) {
   t.end()
 })
 
-tap.test('decode', function (t) {
+test('decode', function (t) {
   var buf = new Buffer(1768)
   buf.writeUInt32BE(42, 0)
 
@@ -93,7 +93,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('encodingLength', function (t) {
+test('encodingLength', function (t) {
   t.test('value must be an Array instance', function (t) {
     t.throws(function () {
       vararray.encodingLength(null)

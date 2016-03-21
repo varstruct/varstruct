@@ -1,10 +1,10 @@
 'use strict'
-var tap = require('tap')
+var test = require('tape').test
 var varstruct = require('../../')
 
 var buffer42 = varstruct.Buffer(42)
 
-tap.test('asserts on codec creation', function (t) {
+test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {
     t.throws(function () {
       varstruct.Buffer()
@@ -15,7 +15,7 @@ tap.test('asserts on codec creation', function (t) {
   t.end()
 })
 
-tap.test('encode', function (t) {
+test('encode', function (t) {
   t.test('value must be a Buffer instance', function (t) {
     t.throws(function () {
       buffer42.encode(new Array(42))
@@ -48,7 +48,7 @@ tap.test('encode', function (t) {
   t.test('write value to buffer', function (t) {
     var buf1 = new Buffer(42)
     var buf2 = new Buffer(42)
-    t.ok(buffer42.encode(buf1, buf2) === buf2)
+    t.true(buffer42.encode(buf1, buf2) === buf2)
     t.same(buffer42.encode.bytes, 42)
     t.same(buf1.toString('hex'), buf2.toString('hex'))
     t.end()
@@ -57,7 +57,7 @@ tap.test('encode', function (t) {
   t.end()
 })
 
-tap.test('decode', function (t) {
+test('decode', function (t) {
   t.test('not enough data for decode', function (t) {
     t.throws(function () {
       buffer42.decode(new Buffer(42), 1)
@@ -68,7 +68,7 @@ tap.test('decode', function (t) {
   t.test('read value from buffer', function (t) {
     var buf1 = new Buffer(42)
     var buf2 = buffer42.decode(buf1)
-    t.ok(buffer42.decode.bytes, 42)
+    t.same(buffer42.decode.bytes, 42)
     t.same(buf1.toString('hex'), buf2.toString('hex'))
     t.end()
   })
@@ -76,7 +76,7 @@ tap.test('decode', function (t) {
   t.end()
 })
 
-tap.test('encodingLength', function (t) {
+test('encodingLength', function (t) {
   t.test('should be length', function (t) {
     t.same(varstruct.Buffer(42).encodingLength(), 42)
     t.end()
