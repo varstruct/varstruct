@@ -62,7 +62,7 @@ varstruct uses [abstract-encoding](http://github.com/mafintosh/abstract-encoding
  * [Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int32, UInt64, Float, Double](#byte-int8-uint8-int16-uint16-int32-uint32-int32-uint64-float-double)
  * [Array](#arraylengtharray-itemcodec), [VarArray](#vararraylengthcodec-itemcodec) and [Sequence](#sequence-itemtype-itemtype--itemtype-)
  * [Buffer](#bufferlength) and [VarBuffer](#varbufferlengthcodec)
- * [VarString](#varstringlengthcodec-encoding)
+ * [String](#stringlength--encoding--utf-8) and [VarString](#varstringlengthcodec--encoding--utf-8)
  * [Bound](#bounditemcodec-checkvalue)
 
 ### varstruct([{ name: string, type: codec }])
@@ -96,7 +96,11 @@ Create a *fixed* length buffer codec.
 
 Create a variable length buffer codec. This will first write out the length of the value buffer and then the value buffer itself. The `lengthCodec` may be variable length itself, but must encode an integer.
 
-### VarString(lengthCodec, encoding)
+### String(length [, encoding = 'utf-8'])
+
+Create a *fixed* length (in bytes) string codec.
+
+### VarString(lengthCodec [, encoding = 'utf-8'])
 
 Create a variable length string codec. This codec uses `VarBuffer` (buffer will be created from string with given `encoding`).
 

@@ -32,7 +32,8 @@ exports.Sequence = require('./types/sequence')
 exports.Buffer = require('./types/buffer')
 exports.VarBuffer = require('./types/varbuffer')
 
-// varstring
+// string & varstring
+exports.String = require('./types/string')
 exports.VarString = require('./types/varstring')
 
 // bound
