@@ -19,7 +19,7 @@
     "url": "https://github.com/dominictarr/varstruct.git"
   },
   "scripts": {
-    "coverage": "nyc npm run unit",
+    "coverage": "nyc --check-coverage --branches 95 --functions 100 tape test/*.js test/**/*.js",
     "lint": "standard",
     "test": "npm run lint && npm run unit",
     "unit": "tape test/*.js test/**/*.js"
