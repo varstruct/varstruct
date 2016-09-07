@@ -56,7 +56,7 @@ test('encodingLength', function (t) {
   t.test('Unknown encoding', function (t) {
     t.throws(function () {
       varstruct.VarString(varstruct.UInt32BE, 'h1').encodingLength('')
-    }, /^TypeError: Unknown encoding: h1$/)
+    }, /^TypeError: .*$/)
     t.end()
   })
 
