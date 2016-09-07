@@ -33,7 +33,7 @@ function createNumber64 (read, write) {
   function decode (buffer, offset, end) {
     if (!offset) offset = 0
     if (!end) return read(buffer, offset)
-    return read(buffer.slice(offset, read), 0)
+    return read(buffer.slice(offset, end), 0)
   }
 
   encode.bytes = decode.bytes = 8
