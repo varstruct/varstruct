@@ -6,6 +6,7 @@ module.exports = function (items) {
 
   // copy items for freezing
   items = items.map(function (item) {
+    if (Array.isArray(item)) item = { name: item[0], type: item[1] }
     if (!item || typeof item.name !== 'string') throw new TypeError('item missing "name" property')
     if (!util.isAbstractCodec(item.type)) throw new TypeError('item "' + item.name + '" has invalid codec')
     return { name: item.name, type: item.type }

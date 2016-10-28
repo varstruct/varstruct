@@ -24,6 +24,13 @@ var vector = vstruct([
   { name: 'z', type: vstruct.DoubleBE }
 ])
 
+// or shortcut
+var vector = vstruct([
+  ['x', vstruct.DoubleBE],
+  ['y', vstruct.DoubleBE],
+  ['z', vstruct.DoubleBE]
+])
+
 //encode a object to get a buffer
 var buffer = vector.encode({
   x: 93.1, y: 87.3, z: 10.39
@@ -66,6 +73,8 @@ varstruct uses [abstract-encoding](http://github.com/mafintosh/abstract-encoding
  * [Bound](#bounditemcodec-checkvalue)
 
 ### varstruct([{ name: string, type: codec }])
+
+Instead object you can use [String name, Codec type]
 
 Create a codec with a fixed number of fields.
 If any subcodec has a variable length, then the new codec will as well.

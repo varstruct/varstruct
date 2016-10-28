@@ -113,8 +113,8 @@ test('bitcoin transactions', function (t) {
     { name: 'sequence', type: varstruct.UInt32LE }
   ])
   var TxOutput = varstruct([
-    { name: 'value', type: varstruct.UInt64LE },
-    { name: 'script', type: varstruct.VarBuffer(VarUIntBitcoin) }
+    ['value', varstruct.UInt64LE],
+    ['script', varstruct.VarBuffer(VarUIntBitcoin)]
   ])
   var Tx = varstruct([
     { name: 'version', type: varstruct.UInt32LE },
