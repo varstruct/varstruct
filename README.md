@@ -37,7 +37,7 @@ var buffer = vector.encode({
 })
 
 var v = vector.decode(buffer)
-// { x, y, z }
+// { x: 93.1, y: 87.3, z: 10.39 }
 ```
 
 ## Example - a message metadata + attachments
