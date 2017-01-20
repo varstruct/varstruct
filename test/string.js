@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {

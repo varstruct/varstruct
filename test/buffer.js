@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 var buffer42 = varstruct.Buffer(42)
 

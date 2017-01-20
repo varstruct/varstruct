@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 var vararray = varstruct.VarArray(varstruct.UInt32BE, varstruct.Buffer(42))
 

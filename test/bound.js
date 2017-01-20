@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 function bits12 (value) {
   if (value > 4095 || value < -4096) throw new Error('Answer 42!')
