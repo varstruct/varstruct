@@ -32,5 +32,8 @@
     "standard": "*",
     "tape": "^4.5.1",
     "varuint-bitcoin": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=4.5.0"
   }
 }
