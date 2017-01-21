@@ -39,7 +39,7 @@ test('encode', function (t) {
 
   t.test('value must be a Buffer instance #1', function (t) {
     t.throws(function () {
-      array42.encode(new Array(42), new Buffer(3))
+      array42.encode(new Array(42), Buffer.allocUnsafe(3))
     }, /^TypeError: value must be a Buffer instance$/)
     t.end()
   })
@@ -53,7 +53,7 @@ test('encode', function (t) {
 
   t.test('write buffers', function (t) {
     var buffers = new Array(42)
-    for (var i = 0; i < buffers.length; ++i) buffers[i] = new Buffer(42)
+    for (var i = 0; i < buffers.length; ++i) buffers[i] = Buffer.allocUnsafe(42)
     var buf = array42.encode(buffers)
     t.same(array42.encode.bytes, 1764)
     t.same(buf.toString('hex'), Buffer.concat(buffers).toString('hex'))
@@ -66,20 +66,20 @@ test('encode', function (t) {
 test('decode', function (t) {
   t.test('not enough data for decode #1', function (t) {
     t.throws(function () {
-      array42.decode(new Buffer(1763))
+      array42.decode(Buffer.allocUnsafe(1763))
     }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
   t.test('not enough data for decode #2', function (t) {
     t.throws(function () {
-      array42.decode(new Buffer(1764), 1)
+      array42.decode(Buffer.allocUnsafe(1764), 1)
     }, /^RangeError: not enough data for decode$/)
     t.end()
   })
 
   t.test('read buffers', function (t) {
-    var buf = new Buffer(1764)
+    var buf = Buffer.allocUnsafe(1764)
     var buffers = array42.decode(buf)
     t.plan(43)
     t.same(array42.decode.bytes, 1764)

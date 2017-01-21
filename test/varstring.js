@@ -1,4 +1,5 @@
 'use strict'
+var randomBytes = require('crypto').randomBytes
 var test = require('tape').test
 var varstruct = require('../')
 
@@ -35,7 +36,7 @@ test('encode/decode', function (t) {
 
   encodings.forEach(function (encoding) {
     t.test('encoding: ' + encoding, function (t) {
-      var s = new Buffer(1000).toString(encoding)
+      var s = randomBytes(1000).toString(encoding)
       var varstring = varstruct.VarString(varstruct.UInt32BE, encoding)
       t.same(varstring.decode(varstring.encode(s)), s)
       t.end()
