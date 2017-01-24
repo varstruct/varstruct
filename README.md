@@ -2,7 +2,6 @@
 
 [![NPM Package](https://img.shields.io/npm/v/varstruct.svg?style=flat-square)](https://www.npmjs.org/package/varstruct)
 [![Build Status](https://img.shields.io/travis/dominictarr/varstruct.svg?branch=master&style=flat-square)](https://travis-ci.org/dominictarr/varstruct)
-[![Dependency status](https://img.shields.io/david/dominictarr/varstruct.svg?style=flat-square)](https://david-dm.org/dominictarr/varstruct#info=dependencies)
 
 [![abstract-encoding](https://img.shields.io/badge/abstract--encoding-compliant-brightgreen.svg?style=flat-square)](https://github.com/mafintosh/abstract-encoding)
 
@@ -15,41 +14,40 @@ This module makes creating binary formats easy. It supports both fixed length st
 ## Example - a 3d vector
 
 ```js
-var vstruct = require('varstruct')
+const vstruct = require('varstruct')
 
 //create a vector codec.
-var vector = vstruct([
+const Vector = vstruct([
   { name: 'x', type: vstruct.DoubleBE },
   { name: 'y', type: vstruct.DoubleBE },
   { name: 'z', type: vstruct.DoubleBE }
 ])
 
-// or shortcut
-var vector = vstruct([
+// or short form
+const Vector = vstruct([
   ['x', vstruct.DoubleBE],
   ['y', vstruct.DoubleBE],
   ['z', vstruct.DoubleBE]
 ])
 
 //encode a object to get a buffer
-var buffer = vector.encode({
-  x: 93.1, y: 87.3, z: 10.39
-})
+const dump = Vector.encode({ x: 93.1, y: 87.3, z: 10.39 })
+// <Buffer 40 57 46 66 66 66 66 66 40 55 d3 33 33 33 33 33 40 24 c7 ae 14 7a e1 48>
 
-var v = vector.decode(buffer)
-// { x: 93.1, y: 87.3, z: 10.39 }
+const xyz = Vector.decode(dump)
+// => { x: 93.1, y: 87.3, z: 10.39 }
 ```
 
 ## Example - a message metadata + attachments
 
 ```js
-var vstruct = require('varstruct')
-var VarIntProtobuf = require('varint')
+const vstruct = require('varstruct')
+const VarIntProtobuf = require('varint')
 
-//codec for a sha256 hash
-var SHA256 = vstruct.Buffer(32)
+// codec for a sha256 hash
+const SHA256 = vstruct.Buffer(32)
 
-var message = vstruct([
+const Message = vstruct([
   // the hash of the previous message
   { name: 'previous', type: SHA256 },
 

@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 var seq = varstruct.Sequence([
   varstruct.UInt64BE,
@@ -55,7 +55,7 @@ test('encode', function (t) {
 
 test('decode', function (t) {
   t.test('read buffers', function (t) {
-    var buf = new Buffer('000000000000000102000000000304', 'hex')
+    var buf = Buffer.from('000000000000000102000000000304', 'hex')
     t.same(seq.decode(buf), [1, 2, 3, 4])
     t.same(seq.decode.bytes, 15)
     t.end()

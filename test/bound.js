@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 function bits12 (value) {
   if (value > 4095 || value < -4096) throw new Error('Answer 42!')
@@ -45,14 +45,14 @@ test('encode', function (t) {
 
 test('decode', function (t) {
   t.test('decode 002a', function (t) {
-    t.same(Int12BitsBE.decode(new Buffer('002a', 'hex')), 42)
+    t.same(Int12BitsBE.decode(Buffer.from('002a', 'hex')), 42)
     t.same(Int12BitsBE.decode.bytes, 2)
     t.end()
   })
 
   t.test('throw on value equal -4097', function (t) {
     t.throws(function () {
-      Int12BitsBE.decode(new Buffer([0x00, 0xef, 0xff]), 1)
+      Int12BitsBE.decode(Buffer.from([0x00, 0xef, 0xff]), 1)
     }, /^Error: Answer 42!$/)
     t.end()
   })

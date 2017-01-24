@@ -1,6 +1,6 @@
 'use strict'
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 var vararray = varstruct.VarArray(varstruct.UInt32BE, varstruct.Buffer(42))
 
@@ -37,7 +37,7 @@ test('encode', function (t) {
 
   t.test('index out of range #1', function (t) {
     t.throws(function () {
-      vararray.encode(new Array(42), new Buffer(3))
+      vararray.encode(new Array(42), Buffer.allocUnsafe(3))
     }, expectedError)
     t.end()
   })
@@ -51,7 +51,7 @@ test('encode', function (t) {
 
   t.test('write buffers', function (t) {
     var buffers = new Array(42)
-    for (var i = 0; i < buffers.length; ++i) buffers[i] = new Buffer(42)
+    for (var i = 0; i < buffers.length; ++i) buffers[i] = Buffer.allocUnsafe(42)
     var buf = vararray.encode(buffers)
     t.same(vararray.encode.bytes, 1768)
     t.same(buf.slice(0, 4).toString('hex'), '0000002a')
@@ -63,7 +63,7 @@ test('encode', function (t) {
 })
 
 test('decode', function (t) {
-  var buf = new Buffer(1768)
+  var buf = Buffer.allocUnsafe(1768)
   buf.writeUInt32BE(42, 0)
 
   t.test('not enough data for decode #1', function (t) {

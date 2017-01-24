@@ -139,7 +139,7 @@ test('bitcoin transactions', function (t) {
   function hex2buffer (obj) {
     for (var k in obj) {
       if (Array.isArray(obj[k])) obj[k] = obj[k].map(hex2buffer)
-      else if (typeof obj[k] === 'string' && isHex(obj[k])) obj[k] = new Buffer(obj[k], 'hex')
+      else if (typeof obj[k] === 'string' && isHex(obj[k])) obj[k] = Buffer.from(obj[k], 'hex')
     }
     return obj
   }
@@ -152,7 +152,7 @@ test('bitcoin transactions', function (t) {
     })
 
     t.test('decode ' + fixture.description, function (t) {
-      var result = Tx.decode(new Buffer(fixture.hex, 'hex'))
+      var result = Tx.decode(Buffer.from(fixture.hex, 'hex'))
       t.same(buffer2hex(result), buffer2hex(fixture.raw))
       t.end()
     })

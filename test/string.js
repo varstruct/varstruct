@@ -1,6 +1,7 @@
 'use strict'
+var randomBytes = require('crypto').randomBytes
 var test = require('tape').test
-var varstruct = require('../../')
+var varstruct = require('../')
 
 test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {
@@ -34,7 +35,7 @@ test('encode/decode', function (t) {
   encodings.forEach(function (encoding) {
     t.test('encoding: ' + encoding, function (t) {
       var length = 42
-      var s = new Buffer(length).toString(encoding)
+      var s = randomBytes(length).toString(encoding)
       var varstring = varstruct.String(length, encoding)
       t.same(varstring.decode(varstring.encode(s)), s)
       t.end()

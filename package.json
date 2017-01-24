@@ -9,11 +9,9 @@
   "license": "MIT",
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "files": [
-    "types",
-    "index.js",
-    "util.js"
+    "lib"
   ],
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/dominictarr/varstruct.git"
@@ -22,15 +20,18 @@
     "coverage": "nyc --check-coverage --branches 95 --functions 100 tape test/*.js test/**/*.js",
     "lint": "standard",
     "test": "npm run lint && npm run unit",
-    "unit": "tape test/*.js test/**/*.js"
+    "unit": "tape test/*.js"
   },
   "dependencies": {
     "int53": "^0.2.4"
   },
   "devDependencies": {
-    "nyc": "^6.1.1",
-    "standard": "^6.0.7",
+    "nyc": "^10.1.2",
+    "standard": "*",
     "tape": "^4.5.1",
     "varuint-bitcoin": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=4.5.0"
   }
 }
