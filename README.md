@@ -112,9 +112,13 @@ Create a *fixed* length (in bytes) string codec.
 
 Create a variable length string codec. This codec uses `VarBuffer` (buffer will be created from string with given `encoding`).
 
-### Bound(itemCodec, checkValue)
+### Bound(itemCodec, checkValueCallback)
 
-Return a codec that will check value before encode and after decode. `checkValue` should throw error if value is wrong.
+Return a codec that will call `checkValueCallback` before encode and after decode. `checkValueCallback` should throw error if the given `value` is wrong.
+
+### Value(itemCodec, constantValue)
+
+Return a codec that will encode `constantValue` every time (and will throw if given any value other than `constantValue`),  and will decode `constantValue` if it exists (throwing otherwise).
 
 ## License
 
