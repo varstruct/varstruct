@@ -37,7 +37,7 @@ test('encode/decode', function (t) {
       var length = 42
       var s = randomBytes(length).toString(encoding)
       var fixedstring = varstruct.String(length, encoding)
-      
+
       t.same(fixedstring.decode(fixedstring.encode(s)), s)
       t.end()
     })
