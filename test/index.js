@@ -77,6 +77,13 @@ test('encode', function (t) {
     }, /^TypeError: expected value as object, got null/)
     t.end()
   })
+  
+  t.test('expected number', function (t) {
+    t.throws(function () {
+      varstruct(varstruct.UInt32BE).encode(function () {})
+    }, /^TypeError: value must be a number'/)
+    t.end()
+  })
 
   t.end()
 })
