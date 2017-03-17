@@ -52,7 +52,7 @@ test('decode', function (t) {
     t.end()
   })
 
-  t.test('offset past end', function (t) {
+  t.test('not enough data for decode (w/ offset and end)', function (t) {
     t.throws(function () {
       value.decode(Buffer.from('ffffdeadbeef', 'hex'), 2, 4)
     }, /^RangeError: not enough data for decode$/)
