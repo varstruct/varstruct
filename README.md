@@ -1,7 +1,7 @@
 # varstruct
 
 [![NPM Package](https://img.shields.io/npm/v/varstruct.svg?style=flat-square)](https://www.npmjs.org/package/varstruct)
-[![Build Status](https://img.shields.io/travis/dominictarr/varstruct.svg?branch=master&style=flat-square)](https://travis-ci.org/dominictarr/varstruct)
+[![Build Status](https://img.shields.io/travis/varstruct/varstruct.svg?branch=master&style=flat-square)](https://travis-ci.org/varstruct/varstruct)
 
 [![abstract-encoding](https://img.shields.io/badge/abstract--encoding-compliant-brightgreen.svg?style=flat-square)](https://github.com/mafintosh/abstract-encoding)
 

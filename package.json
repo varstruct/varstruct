@@ -2,9 +2,9 @@
   "name": "varstruct",
   "version": "6.1.1",
   "description": "encode/decode variable binary structures",
-  "homepage": "https://github.com/dominictarr/varstruct",
+  "homepage": "https://github.com/varstruct/varstruct",
   "bugs": {
-    "url": "https://github.com/dominictarr/varstruct/issues"
+    "url": "https://github.com/varstruct/varstruct/issues"
   },
   "license": "MIT",
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
@@ -14,7 +14,7 @@
   "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dominictarr/varstruct.git"
+    "url": "https://github.com/varstruct/varstruct.git"
   },
   "scripts": {
     "coverage": "nyc --check-coverage --branches 95 --functions 100 tape test/*.js test/**/*.js",
