@@ -47,6 +47,18 @@ test('decode', function (t) {
     t.end()
   })
 
+  t.test('extra data for decode', function (t) {
+    value.decode(Buffer.from('deadbeefffff', 'hex'))
+    t.end()
+  })
+
+  t.test('not enough data for decode (w/ offset and end)', function (t) {
+    t.throws(function () {
+      value.decode(Buffer.from('ffffdeadbeef', 'hex'), 2, 4)
+    }, /^RangeError: not enough data for decode$/)
+    t.end()
+  })
+
   t.test('read buffers', function (t) {
     var result = value.decode(Buffer.from('deadbeef', 'hex'))
     t.same(value.decode.bytes, 4)
