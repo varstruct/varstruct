@@ -67,21 +67,21 @@ test('encode', function (t) {
   t.test('expected object', function (t) {
     t.throws(function () {
       varstruct([length42]).encode()
-    }, /^TypeError: expected value as object, got undefined/)
+    }, /^TypeError: expected value as object, got undefined$/)
     t.end()
   })
 
   t.test('expected object, not null', function (t) {
     t.throws(function () {
       varstruct([length42]).encode(null)
-    }, /^TypeError: expected value as object, got null/)
+    }, /^TypeError: expected value as object, got null$/)
     t.end()
   })
 
   t.test('expected number', function (t) {
     t.throws(function () {
-      varstruct(varstruct.UInt32BE).encode(function () {})
-    }, /^TypeError: value must be a number'/)
+      varstruct.UInt32BE.encode(function () {})
+    }, /^TypeError: value must be a number$/)
     t.end()
   })
 
