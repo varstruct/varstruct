@@ -14,6 +14,13 @@ test('asserts on codec creation', function (t) {
   t.end()
 })
 
+test('Unknown encoding', function (t) {
+  t.throws(function () {
+    varstruct.VarString(varstruct.UInt32BE, 'h1')
+  }, /^TypeError: invalid encoding$/)
+  t.end()
+})
+
 test('encode', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
@@ -51,13 +58,6 @@ test('encodingLength', function (t) {
     t.throws(function () {
       varstruct.VarString(varstruct.UInt32BE).encodingLength(null)
     }, /^TypeError: value must be a string$/)
-    t.end()
-  })
-
-  t.test('Unknown encoding', function (t) {
-    t.throws(function () {
-      varstruct.VarString(varstruct.UInt32BE, 'h1').encodingLength('')
-    }, /^TypeError: .*$/)
     t.end()
   })
 

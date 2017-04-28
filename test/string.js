@@ -14,11 +14,29 @@ test('asserts on codec creation', function (t) {
   t.end()
 })
 
+test('Unknown encoding', function (t) {
+  t.throws(function () {
+    varstruct.String(14, 'h1')
+  }, /^TypeError: invalid encoding$/)
+  t.end()
+})
+
 test('encode', function (t) {
   t.test('value must be a string', function (t) {
     t.throws(function () {
       varstruct.String(42).encode(null)
     }, /^TypeError: value must be a string$/)
+    t.end()
+  })
+
+  t.test('encoded value must not exceed length', function (t) {
+    t.throws(function () {
+      varstruct.String(3).encode('foobar')
+    }, /^RangeError: value.length is out of bounds/)
+
+    t.throws(function () {
+      varstruct.String(3).encode('foobar', Buffer.alloc(3))
+    }, /^RangeError: value.length is out of bounds/)
     t.end()
   })
 
@@ -49,11 +67,6 @@ test('encode/decode', function (t) {
 test('encodingLength', function (t) {
   t.test('should return length even if value is not string', function (t) {
     t.same(varstruct.String(42).encodingLength(null), 42)
-    t.end()
-  })
-
-  t.test('should return length even if encoding is invalid', function (t) {
-    t.same(varstruct.String(42, 'h1').encodingLength(''), 42)
     t.end()
   })
 
