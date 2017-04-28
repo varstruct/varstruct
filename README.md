@@ -104,6 +104,11 @@ Create a *fixed* length buffer codec.
 
 Create a variable length buffer codec. This will first write out the length of the value buffer and then the value buffer itself. The `lengthCodec` may be variable length itself, but must encode an integer.
 
+### VarMap(lengthCodec, keyCodec, valueCodec)
+
+Create a variable length object codec. This will first write out the number of entries in the object and then write each entry as a key-value pair.
+The `keyCodec` must accept `typeof === 'string'` keys.
+
 ### String(length [, encoding = 'utf-8'])
 
 Create a *fixed* length (in bytes) string codec.
