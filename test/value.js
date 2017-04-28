@@ -33,6 +33,12 @@ test('encode', function (t) {
     var result = value.encode()
     t.same(value.encode.bytes, 4)
     t.same(result.toString('hex'), 'deadbeef')
+
+    var buf = Buffer.allocUnsafe(4)
+    value.encode(undefined, buf)
+    t.same(value.encode.bytes, 4)
+    t.same(buf.toString('hex'), 'deadbeef')
+
     t.end()
   })
 
