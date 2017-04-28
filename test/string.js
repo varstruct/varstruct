@@ -22,6 +22,17 @@ test('encode', function (t) {
     t.end()
   })
 
+  t.test('encoded value must not exceed length', function (t) {
+    t.throws(function () {
+      varstruct.String(3).encode('foobar')
+    }, /^RangeError: value.length is out of bounds/)
+
+    t.throws(function () {
+      varstruct.String(3).encode('foobar', Buffer.alloc(3))
+    }, /^RangeError: value.length is out of bounds/)
+    t.end()
+  })
+
   t.end()
 })
 
