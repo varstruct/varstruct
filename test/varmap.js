@@ -114,6 +114,23 @@ test('decode', function (t) {
     t.end()
   })
 
+  t.test('read/write buffer with non-string keyCodec', function (t) {
+    var type = varstruct.VarMap(varstruct.UInt8, varstruct.UInt8, varstruct.UInt8)
+    var result = type.decode(Buffer.from('011502', 'hex'))
+    t.same(type.decode.bytes, 3)
+    t.same(result, {
+      '21': 2
+    })
+
+    t.throws(function () {
+      t.same(type.encode({
+        '21': 2
+      }).toString('hex'), '011502')
+    }, /TypeError: value must be a number/)
+
+    t.end()
+  })
+
   t.end()
 })
 
