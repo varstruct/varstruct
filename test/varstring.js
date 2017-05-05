@@ -46,6 +46,8 @@ test('encode/decode', function (t) {
       var s = randomBytes(1000).toString(encoding)
       var varstring = varstruct.VarString(varstruct.UInt32BE, encoding)
       t.same(varstring.decode(varstring.encode(s)), s)
+      t.same(varstring.encode.bytes, 4 + Buffer.byteLength(s, encoding))
+      t.same(varstring.decode.bytes, 4 + Buffer.byteLength(s, encoding))
       t.end()
     })
   })
