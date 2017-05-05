@@ -155,6 +155,23 @@ test('decode', function (t) {
   t.end()
 })
 
+test('encode/decode', function (t) {
+  var type = varstruct([
+    ['a', varstruct.VarString(varstruct.UInt16LE)],
+    ['b', varstruct.VarString(varstruct.UInt8)],
+    ['c', varstruct.Buffer(64)]
+  ])
+
+  let data = {
+    'a': 'foobarbazzz',
+    'b': '',
+    'c': Buffer.alloc(64, 0xff)
+  }
+
+  t.same(data, type.decode(type.encode(data)))
+  t.end()
+})
+
 test('encodingLength', function (t) {
   t.test('value must not be undefined', function (t) {
     t.throws(function () {
