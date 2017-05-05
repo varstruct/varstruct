@@ -159,16 +159,19 @@ test('encode/decode', function (t) {
   var type = varstruct([
     ['a', varstruct.VarString(varstruct.UInt16LE)],
     ['b', varstruct.VarString(varstruct.UInt8)],
-    ['c', varstruct.Buffer(64)]
+    ['c', varstruct.Buffer(8)]
   ])
 
   let data = {
     'a': 'foobarbazzz',
     'b': '',
-    'c': Buffer.alloc(64, 0xff)
+    'c': Buffer.alloc(8, 0xff)
   }
 
-  t.same(data, type.decode(type.encode(data)))
+  let buffer = type.encode(data)
+  t.same(type.encode.bytes, 22)
+  t.same(data, type.decode(buffer))
+  t.same(type.decode.bytes, 22)
   t.end()
 })
 
