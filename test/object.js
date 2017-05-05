@@ -96,6 +96,7 @@ test('encode', function (t) {
       'number': 0xfe,
       'foobar': Buffer.alloc(8)
     }, result, 10)
+    t.same(example.encode.bytes, 9)
     t.same(result.slice(10).toString('hex'), 'fe0000000000000000')
 
     t.end()
@@ -123,6 +124,7 @@ test('decode', function (t) {
       'number': 0xfe,
       'foobar': Buffer.alloc(8)
     })
+    t.same(example.decode.bytes, 9)
     t.end()
   })
 
