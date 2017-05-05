@@ -73,7 +73,7 @@ test('encode', function (t) {
     t.end()
   })
 
-  t.test('destination buffer is too small', function (t) {
+  t.test('invalid key', function (t) {
     t.throws(function () {
       example.encode({
         'booooooooo': 0
