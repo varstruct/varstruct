@@ -12,14 +12,14 @@ test('encode', function (t) {
   t.test('expected object', function (t) {
     t.throws(function () {
       varstruct([length42]).encode()
-    }, /^TypeError: expected value as object, got undefined$/)
+    }, /^TypeError: Expected Object, got undefined$/)
     t.end()
   })
 
   t.test('expected object, not null', function (t) {
     t.throws(function () {
       varstruct([length42]).encode(null)
-    }, /^TypeError: expected value as object, got null$/)
+    }, /^TypeError: Expected Object, got null$/)
     t.end()
   })
 
