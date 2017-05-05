@@ -31,11 +31,20 @@ test('encode', function (t) {
   })
 
   t.test('write buffer', function (t) {
-    var buf = Buffer.allocUnsafe(42)
+    var buf = Buffer.alloc(42, 0xfe)
     var result = varbuffer.encode(buf)
     t.same(varbuffer.encode.bytes, 46)
-    t.same(result.slice(0, 4).toString('hex'), '0000002a')
-    t.same(result.slice(4).toString('hex'), buf.toString('hex'))
+    t.same(result.toString('hex'), '0000002afefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe')
+
+    result.fill(0)
+    varbuffer.encode(buf, result, 0)
+    t.same(result.toString('hex'), '0000002afefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe')
+
+    // offset > 0 case
+    result.fill(0)
+    varbuffer.encode(Buffer.alloc(32, 0xfe), result, 10)
+    t.same(result.slice(10).toString('hex'), '00000020fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe')
+
     t.end()
   })
 
