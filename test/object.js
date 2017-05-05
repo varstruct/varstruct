@@ -126,6 +126,13 @@ test('decode', function (t) {
     t.end()
   })
 
+  t.test('enough data for decode, but restricted via end', function (t) {
+    t.throws(function () {
+      example.decode(Buffer.from('fffffe0000000000000000', 'hex'), 0, 4)
+    }, /^RangeError: not enough data for decode$/)
+    t.end()
+  })
+
   t.test('not enough data for decode (w/ offset and end)', function (t) {
     t.throws(function () {
       example.decode(Buffer.from('fe0000000000000000', 'hex'), 2, 4)
