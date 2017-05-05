@@ -176,7 +176,7 @@ test('encodingLength', function (t) {
   t.test('value must not be undefined', function (t) {
     t.throws(function () {
       example.encodingLength(null)
-    }, /^TypeError: Expected object/)
+    }, /^TypeError: Expected Object, got null/)
     t.end()
   })
 
