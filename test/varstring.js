@@ -29,6 +29,21 @@ test('encode', function (t) {
     t.end()
   })
 
+  t.test('throws for non-buffer (or too small)', function (t) {
+    t.plan(3)
+    t.throws(function () {
+      varstruct.VarString(varstruct.UInt32BE).encode('foobar', 'not a buffer')
+    }, /^TypeError: buffer must be a Buffer instance/)
+
+    t.throws(function () {
+      varstruct.VarString(varstruct.UInt32BE).encode('foobar', Buffer.alloc(6))
+    }, /^RangeError: destination buffer is too small/)
+
+    t.throws(function () {
+      varstruct.VarString(varstruct.UInt32BE).encode('foobar', Buffer.alloc(6), 4)
+    }, /^RangeError: destination buffer is too small/)
+  })
+
   t.end()
 })
 
