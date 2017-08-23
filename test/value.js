@@ -58,6 +58,13 @@ test('decode', function (t) {
     t.end()
   })
 
+  t.test('(Un)expected value', function (t) {
+    t.throws(function () {
+      value.decode(Buffer.from('deadbeeeeeff', 'hex'))
+    }, /^TypeError: Expected value 3735928559$/)
+    t.end()
+  })
+
   t.test('not enough data for decode (w/ offset and end)', function (t) {
     t.throws(function () {
       value.decode(Buffer.from('ffffdeadbeef', 'hex'), 2, 4)
