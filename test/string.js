@@ -30,14 +30,22 @@ test('encode', function (t) {
   })
 
   t.test('encoded value must not exceed length', function (t) {
+    t.plan(4)
     t.throws(function () {
       varstruct.String(3).encode('foobar')
     }, /^RangeError: value.length is out of bounds/)
 
     t.throws(function () {
-      varstruct.String(3).encode('foobar', Buffer.alloc(3))
-    }, /^RangeError: value.length is out of bounds/)
-    t.end()
+      varstruct.String(6).encode('foobar', 'not a buffer')
+    }, /^TypeError: buffer must be a Buffer instance/)
+
+    t.throws(function () {
+      varstruct.String(6).encode('foobar', Buffer.alloc(3))
+    }, /^RangeError: destination buffer is too small/)
+
+    t.throws(function () {
+      varstruct.String(6).encode('foobar', Buffer.alloc(6), 3)
+    }, /^RangeError: destination buffer is too small/)
   })
 
   t.end()
