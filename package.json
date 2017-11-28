@@ -23,7 +23,8 @@
     "unit": "tape test/*.js"
   },
   "dependencies": {
-    "int53": "^0.2.4"
+    "int53": "^0.2.4",
+    "safe-buffer": "^5.1.1"
   },
   "devDependencies": {
     "nyc": "^10.1.2",
