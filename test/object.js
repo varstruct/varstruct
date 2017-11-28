@@ -1,4 +1,5 @@
 'use strict'
+var Buffer = require('safe-buffer').Buffer
 var test = require('tape').test
 var varstruct = require('../')
 var example = varstruct([

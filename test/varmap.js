@@ -1,4 +1,5 @@
 'use strict'
+var Buffer = require('safe-buffer').Buffer
 var test = require('tape').test
 var varstruct = require('../')
 var example = varstruct.VarMap(varstruct.UInt8, varstruct.String(4), varstruct.UInt8)
