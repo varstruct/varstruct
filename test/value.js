@@ -76,7 +76,7 @@ test('decode', function (t) {
   t.test('read buffers', function (t) {
     var result = value.decode(Buffer.from('deadbeef', 'hex'))
     t.same(value.decode.bytes, 4)
-    t.same(result, undefined)
+    t.same(result, 0xdeadbeef)
     t.end()
   })
 
