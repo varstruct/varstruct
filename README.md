@@ -78,7 +78,7 @@ Instead object you can use [String name, Codec type]
 Create a codec with a fixed number of fields.
 If any subcodec has a variable length, then the new codec will as well.
 
-### Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int32, UInt64, Float, Double
+### Byte, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double
 
 If you want Big Endian, append `BE`, for examlpe `Int16BE` or add `LE` for Little Endian.
 
