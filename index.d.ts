@@ -12,51 +12,51 @@ declare module 'varstruct' {
         | 'binary'
         | 'hex';
 
-    export interface Codec {
-        encode (object: any, buffer?: NodeBuffer, offset?: number): NodeBuffer;
+    export interface Codec<T> {
+        encode (object: T, buffer?: NodeBuffer, offset?: number): NodeBuffer;
         decode (buffer: NodeBuffer, offset?: number): NodeBuffer;
-        encodingLength (object: any): number;
+        encodingLength (object: T): number;
     }
 
-    export interface ItemStruct {
+    export interface ItemStruct<T> {
         name: string;
-        type: Codec;
+        type: Codec<T>;
     }
 
-    export type ItemTuple = [string, Codec];
+    export type ItemTuple<T> = [string, Codec<T>];
 
-    export type Item = ItemStruct | ItemTuple;
+    export type Item<T> = ItemStruct<T> | ItemTuple<T>;
 
-    export default function (items: Item[]): Codec;
+    export const Byte: Codec<number>;
+    export const Int8: Codec<number>;
+    export const UInt8: Codec<number>;
+    export const Int16BE: Codec<number>;
+    export const Int16LE: Codec<number>;
+    export const UInt16BE: Codec<number>;
+    export const UInt16LE: Codec<number>;
+    export const Int32BE: Codec<number>;
+    export const Int32LE: Codec<number>;
+    export const UInt32BE: Codec<number>;
+    export const UInt32LE: Codec<number>;
+    export const Int64BE: Codec<number>;
+    export const Int64LE: Codec<number>;
+    export const UInt64BE: Codec<number>;
+    export const UInt64LE: Codec<number>;
+    export const FloatBE: Codec<number>;
+    export const FloatLE: Codec<number>;
+    export const DoubleBE: Codec<number>;
+    export const DoubleLE: Codec<number>;
 
-    export const Byte: Codec;
-    export const Int8: Codec;
-    export const UInt8: Codec;
-    export const Int16BE: Codec;
-    export const Int16LE: Codec;
-    export const UInt16BE: Codec;
-    export const UInt16LE: Codec;
-    export const Int32BE: Codec;
-    export const Int32LE: Codec;
-    export const UInt32BE: Codec;
-    export const UInt32LE: Codec;
-    export const Int64BE: Codec;
-    export const Int64LE: Codec;
-    export const UInt64BE: Codec;
-    export const UInt64LE: Codec;
-    export const FloatBE: Codec;
-    export const FloatLE: Codec;
-    export const DoubleBE: Codec;
-    export const DoubleLE: Codec;
+    export function Array <T> (length: number, itemCodec: Codec<T>): Codec<T>;
+    export function VarArray <T> (lengthCodec: Codec<T>, itemCodec: Codec<T>): Codec<T>;
+    export function Sequence <T> (itemCodecs: Codec<T>[]): Codec<T>;
+    export function Buffer <T> (length: number): Codec<T>;
+    export function VarBuffer <T> (lengthCodec: Codec<T>): Codec<T>;
+    export function VarMap <T> (lengthCodec: Codec<T>, keyCodec: Codec<T>, valueCodec: Codec<T>): Codec<T>;
+    export function String <T> (length: number, encoding?: Encoding): Codec<T>;
+    export function VarString <T> (lengthCodec: Codec<T>, encoding?: Encoding): Codec<T>;
+    export function Bound <T> (itemCodec: Codec<T>, checkValue: (value: T) => any): Codec<T>;
+    export function Value <T> (itemCodec: Codec<T>, value: T): Codec<T>;
 
-    export function Array (length: number, itemCodec: Codec): Codec;
-    export function VarArray (lengthCodec: Codec, itemCodec: Codec): Codec;
-    export function Sequence (itemCodecs: Codec[]): Codec;
-    export function Buffer (length: number): Codec;
-    export function VarBuffer (lengthCodec: Codec): Codec;
-    export function VarMap (lengthCodec: Codec, keyCodec: Codec, valueCodec: Codec): Codec;
-    export function String (length: number, encoding?: Encoding): Codec;
-    export function VarString (lengthCodec: Codec, encoding?: Encoding): Codec;
-    export function Bound (itemCodec: Codec, checkValue: () => any): Codec;
-    export function Value (itemCodec: Codec, value: any): Codec;
+    export default function VarStruct <T> (items: Item<T>[]): Codec<T>;
 }
