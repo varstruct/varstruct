@@ -18,8 +18,8 @@
   },
   "scripts": {
     "coverage": "nyc --check-coverage --branches 95 --functions 100 tape test/*.js test/**/*.js",
-    "lint": "standard",
-    "test": "npm run lint && npm run unit",
+    "standard": "standard",
+    "test": "npm run standard && npm run unit",
     "unit": "tape test/*.js"
   },
   "dependencies": {
@@ -33,6 +33,6 @@
     "varuint-bitcoin": "^1.0.1"
   },
   "engines": {
-    "node": ">=4.5.0"
+    "node": ">=10.0.0"
   }
 }
