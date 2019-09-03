@@ -1,9 +1,9 @@
 'use strict'
-var Buffer = require('safe-buffer').Buffer
-var test = require('tape').test
-var varstruct = require('../')
+const Buffer = require('safe-buffer').Buffer
+const test = require('tape').test
+const varstruct = require('../')
 
-var array42 = varstruct.Array(42, varstruct.Buffer(42))
+const array42 = varstruct.Array(42, varstruct.Buffer(42))
 
 test('asserts on codec creation', function (t) {
   t.test('length must be a number', function (t) {
@@ -53,9 +53,8 @@ test('encode', function (t) {
   })
 
   t.test('write buffers', function (t) {
-    var buffers = new Array(42)
-    for (var i = 0; i < buffers.length; ++i) buffers[i] = Buffer.allocUnsafe(42)
-    var buf = array42.encode(buffers)
+    const buffers = new Array(42).fill().map(x => Buffer.allocUnsafe(42))
+    const buf = array42.encode(buffers)
     t.same(array42.encode.bytes, 1764)
     t.same(buf.toString('hex'), Buffer.concat(buffers).toString('hex'))
     t.end()
@@ -80,11 +79,11 @@ test('decode', function (t) {
   })
 
   t.test('read buffers', function (t) {
-    var buf = Buffer.allocUnsafe(1764)
-    var buffers = array42.decode(buf)
+    const buf = Buffer.allocUnsafe(1764)
+    const buffers = array42.decode(buf)
     t.plan(43)
     t.same(array42.decode.bytes, 1764)
-    for (var i = 0, offset = 0; i < buffers.length; ++i, offset += 42) {
+    for (let i = 0, offset = 0; i < buffers.length; ++i, offset += 42) {
       t.same(buffers[i].toString('hex'), buf.slice(offset, offset + 42).toString('hex'))
     }
     t.end()

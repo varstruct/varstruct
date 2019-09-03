@@ -1,8 +1,8 @@
 'use strict'
-var Buffer = require('safe-buffer').Buffer
-var test = require('tape').test
-var varstruct = require('../')
-var example = varstruct([
+const Buffer = require('safe-buffer').Buffer
+const test = require('tape').test
+const varstruct = require('../')
+const example = varstruct([
   ['number', varstruct.UInt8],
   ['foobar', varstruct.Buffer(8)]
 ])
@@ -68,17 +68,17 @@ test('encode', function (t) {
   t.test('destination buffer is too small', function (t) {
     t.throws(function () {
       example.encode({
-        'number': 0xfe,
-        'foobar': Buffer.alloc(8)
+        number: 0xfe,
+        foobar: Buffer.alloc(8)
       }, Buffer.allocUnsafe(3))
     }, /^RangeError: destination buffer is too small$/)
     t.end()
   })
 
   t.test('write buffer', function (t) {
-    var result = example.encode({
-      'number': 0xfe,
-      'foobar': Buffer.alloc(8)
+    let result = example.encode({
+      number: 0xfe,
+      foobar: Buffer.alloc(8)
     })
 
     t.same(example.encode.bytes, 9)
@@ -86,16 +86,16 @@ test('encode', function (t) {
 
     result.fill(0)
     example.encode({
-      'number': 0xfe,
-      'foobar': Buffer.alloc(8)
+      number: 0xfe,
+      foobar: Buffer.alloc(8)
     }, result, 0)
     t.same(result.toString('hex'), 'fe0000000000000000')
 
     // offset > 0 case
     result = Buffer.alloc(19)
     example.encode({
-      'number': 0xfe,
-      'foobar': Buffer.alloc(8)
+      number: 0xfe,
+      foobar: Buffer.alloc(8)
     }, result, 10)
     t.same(example.encode.bytes, 9)
     t.same(result.slice(10).toString('hex'), 'fe0000000000000000')
@@ -120,10 +120,10 @@ test('decode', function (t) {
   })
 
   t.test('decode (w/ offset)', function (t) {
-    var result = example.decode(Buffer.from('fffffe0000000000000000', 'hex'), 2)
+    const result = example.decode(Buffer.from('fffffe0000000000000000', 'hex'), 2)
     t.same(result, {
-      'number': 0xfe,
-      'foobar': Buffer.alloc(8)
+      number: 0xfe,
+      foobar: Buffer.alloc(8)
     })
     t.same(example.decode.bytes, 9)
     t.end()
@@ -144,11 +144,11 @@ test('decode', function (t) {
   })
 
   t.test('read buffers', function (t) {
-    var result = example.decode(Buffer.from('fe0000000000000000', 'hex'))
+    const result = example.decode(Buffer.from('fe0000000000000000', 'hex'))
     t.same(example.decode.bytes, 9)
     t.same(result, {
-      'number': 0xfe,
-      'foobar': Buffer.alloc(8)
+      number: 0xfe,
+      foobar: Buffer.alloc(8)
     })
     t.end()
   })
@@ -157,19 +157,19 @@ test('decode', function (t) {
 })
 
 test('encode/decode', function (t) {
-  var type = varstruct([
+  const type = varstruct([
     ['a', varstruct.VarString(varstruct.UInt16LE)],
     ['b', varstruct.VarString(varstruct.UInt8)],
     ['c', varstruct.Buffer(8)]
   ])
 
-  let data = {
-    'a': 'foobarbazzz',
-    'b': '',
-    'c': Buffer.alloc(8, 0xff)
+  const data = {
+    a: 'foobarbazzz',
+    b: '',
+    c: Buffer.alloc(8, 0xff)
   }
 
-  let buffer = type.encode(data)
+  const buffer = type.encode(data)
   t.same(type.encode.bytes, 22)
   t.same(data, type.decode(buffer))
   t.same(type.decode.bytes, 22)
