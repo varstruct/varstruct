@@ -1,6 +1,6 @@
 {
   "name": "varstruct",
-  "version": "6.1.2",
+  "version": "6.1.3",
   "description": "encode/decode variable binary structures",
   "homepage": "https://github.com/varstruct/varstruct",
   "bugs": {
