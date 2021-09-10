@@ -9,7 +9,7 @@
 
 encode/decode variable binary structures.
 
-This module makes creating binary formats easy. It supports both fixed length structures (like classic c structs), and variable (usually length delemited) structures.
+This module makes creating binary formats easy. It supports both fixed length structures (like classic C structs), and variable (usually length delimited) structures.
 
 ## Example - a 3d vector
 
